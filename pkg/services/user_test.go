@@ -1,14 +1,16 @@
 package services
 
 import (
-	"RD-Clone-API/pkg/internal"
-	"RD-Clone-API/pkg/model"
-	"RD-Clone-API/pkg/services/mock_services"
+	"RD-Clone-API/pkg/services/mock_repositories"
 	"context"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
+
+	"RD-Clone-API/pkg/internal"
+	"RD-Clone-API/pkg/model"
+
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUserSvc_SignUp(t *testing.T) {
@@ -31,8 +33,8 @@ func TestUserSvc_SignUp(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	userRepo := mock_services.NewMockUserRepository(ctrl)
-	tokenRepo := mock_services.NewMockTokenRepository(ctrl)
+	userRepo := mock_repositories.NewMockUserRepository(ctrl)
+	tokenRepo := mock_repositories.NewMockTokenRepository(ctrl)
 
 	tokenRepo.EXPECT().Save(ctx, gomock.Any()).Return(nil)
 	userRepo.EXPECT().Save(ctx, gomock.Any()).Return(&m, nil)

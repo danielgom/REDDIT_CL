@@ -1,31 +1,33 @@
+// Package routes will be the responsible for adding all routes from the service.
 package routes
 
 import (
-	"RD-Clone-API/pkg/internal"
-	"context"
+	"RD-Clone-API/pkg/services"
 	"errors"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"RD-Clone-API/pkg/internal"
+
+	"github.com/labstack/echo/v4"
 )
 
-type UserService interface {
-	SignUp(context.Context, *internal.RegisterRequest) error
-}
-
+// UserHandler is an instance of our user handler API.
 type UserHandler struct {
-	UsrSvc UserService
+	UsrSvc services.UserService
 }
 
-func NewUserHandler(svc UserService) *UserHandler {
+// NewUserHandler returns a UserHandler instance.
+func NewUserHandler(svc services.UserService) *UserHandler {
 	return &UserHandler{UsrSvc: svc}
 }
 
+// Register adds all routes related to user service.
 func (h *UserHandler) Register(r *echo.Echo) {
 	r.POST("/signup", h.SignUp)
 }
 
+// SignUp is used to create a new user.
 func (h *UserHandler) SignUp(c echo.Context) error {
-
 	var req internal.RegisterRequest
 
 	if err := c.Bind(&req); err != nil {

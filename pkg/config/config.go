@@ -1,17 +1,20 @@
+// Package config is the configuration package of all our tools
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
+// Config is where the global configuration is stored.
 type Config struct {
 	Port string `mapstructure:"PORT"`
-	DB   DB     `mapstructure:",squash"`
-	SMTP SMTP   `mapstructure:",squash"`
+	DB   dB     `mapstructure:",squash"`
+	SMTP sMTP   `mapstructure:",squash"`
 }
 
-type DB struct {
+type dB struct {
 	Name     string `mapstructure:"DB_NAME"`
 	Port     string `mapstructure:"DB_PORT"`
 	User     string `mapstructure:"DB_USER"`
@@ -19,7 +22,7 @@ type DB struct {
 	Host     string `mapstructure:"DB_HOST"`
 }
 
-type SMTP struct {
+type sMTP struct {
 	From     string `mapstructure:"SMTP_FROM_MAIL"`
 	Host     string `mapstructure:"SMTP_HOST"`
 	Port     string `mapstructure:"SMTP_PORT"`
@@ -27,6 +30,7 @@ type SMTP struct {
 	Password string `mapstructure:"SMTP_PASSWORD"`
 }
 
+// LoadConfig gets the configuration in from .env files and stores the in Config struct.
 func LoadConfig() *Config {
 	viper.AddConfigPath("./pkg/config/envs")
 	viper.SetConfigName("dev")

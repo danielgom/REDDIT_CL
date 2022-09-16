@@ -1,3 +1,4 @@
+// Package main where the execution of the program lives.
 package main
 
 import (
@@ -7,6 +8,7 @@ import (
 	"RD-Clone-API/pkg/services"
 	"context"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"net/http"
 	"os/signal"
@@ -14,33 +16,32 @@ import (
 	"time"
 )
 
-func main() {
+const defaultServerTimeout = time.Second * 5
 
+func main() {
 	c := config.LoadConfig()
 	r := echo.New()
 
-	DBconn := config.InitDatabase(c)
-	userRepository := db.NewUserRepository(DBconn)
-	tokenRepository := db.NewTokenRepository(DBconn)
+	DBc := config.InitDatabase(c)
+	userRepository := db.NewUserRepository(DBc)
+	tokenRepository := db.NewTokenRepository(DBc)
 
 	userService := services.NewUserService(userRepository, tokenRepository)
 	userHandler := routes.NewUserHandler(userService)
 	userHandler.Register(r)
 
-	srv := http.Server{
-		Addr:              c.Port,
-		Handler:           r,
-		ReadTimeout:       time.Second * 5,
-		ReadHeaderTimeout: time.Second * 3,
-		WriteTimeout:      time.Second * 5,
-		IdleTimeout:       time.Second * 5,
+	r.Use(middleware.Logger())
+	r.Server = &http.Server{
+		ReadTimeout:       defaultServerTimeout,
+		WriteTimeout:      defaultServerTimeout,
+		IdleTimeout:       defaultServerTimeout,
+		ReadHeaderTimeout: defaultServerTimeout,
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil {
+		if err := r.Start(c.Port); err != nil {
 			log.Fatalln("error serving", err.Error())
 		}
 	}()
@@ -51,12 +52,10 @@ func main() {
 
 	log.Println("shutting down gracefully")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("server forced to shutdown: ", err)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultServerTimeout)
+	if err := r.Shutdown(ctx); err != nil {
+		cancel()
+		log.Fatalln("server forced to shutdown: ", err)
 	}
-
-	log.Println("server exiting")
 
 }

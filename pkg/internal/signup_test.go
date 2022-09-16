@@ -1,9 +1,9 @@
 package internal
 
 import (
-	"errors"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestValidate(t *testing.T) {
@@ -14,9 +14,9 @@ func TestValidate(t *testing.T) {
 		password string
 		err      error
 	}{
-		{"empty username fails", "", "test_1@hotmail.com", "Password1@", errors.New("username should not be empty")},
-		{"invalid mail fails", "Daniel", "test_1@hotmail@", "Password1@", errors.New("invalid email")},
-		{"invalid password fails", "Daniel", "test_1@hotmail.com", "Passwo", errors.New("invalid password")},
+		{"empty username fails", "", "test_1@hotmail.com", "Password1@", errEmptyUsername},
+		{"invalid mail fails", "Daniel", "test_1@hotmail@", "Password1@", errInvalidEmail},
+		{"invalid password fails", "Daniel", "test_1@hotmail.com", "Passwo", errInvalidPassword},
 		{"all fields valid success", "Daniel", "test_1@hotmail.com", "Password1@", nil},
 	}
 

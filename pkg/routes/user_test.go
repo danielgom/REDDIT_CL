@@ -1,16 +1,18 @@
 package routes
 
 import (
-	"RD-Clone-API/pkg/internal"
-	"RD-Clone-API/pkg/routes/mock_routes"
+	"RD-Clone-API/pkg/routes/mock_services"
 	"encoding/json"
-	"github.com/golang/mock/gomock"
-	"github.com/labstack/echo/v4"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"RD-Clone-API/pkg/internal"
+
+	"github.com/golang/mock/gomock"
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -34,7 +36,7 @@ func TestCreateUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mSvc := mock_routes.NewMockUserService(ctrl)
+	mSvc := mock_services.NewMockUserService(ctrl)
 	mSvc.EXPECT().SignUp(c.Request().Context(), &rr).Return(nil)
 
 	h := NewUserHandler(mSvc)
@@ -43,5 +45,4 @@ func TestCreateUser(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, http.StatusCreated, rec.Code)
 	require.Equal(t, "\"user has been registered\"", strings.TrimSpace(rec.Body.String()))
-
 }

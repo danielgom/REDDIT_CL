@@ -78,9 +78,6 @@ linters:
     - whitespace
     - wrapcheck
 
-    # pyx linters
-    # - godbcontext
-
     # I'd like to be able to use these, but we need to rework some code
     # - gochecknoglobals
     # - paralleltest
@@ -95,21 +92,11 @@ linters:
     - wsl  # don't want this
 
 linters-settings:
-#  custom:
-#    godbcontext:
-#      path: ../../godbcontext/godbcontext.so
-#      description: |
-#        Checks that database calls are made with context-aware functions.
   dupl:
     threshold: 60
   funlen:
     lines: 50
     statements: 35
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(perceptyx.com)
   goconst:
     min-len: 2
     min-occurrences: 2
@@ -135,8 +122,6 @@ linters-settings:
   gofumpt:
     lang-version: "1.19"
     extra-rules: true
-  goimports:
-    local-prefixes: perceptyx.com
   gosimple:
     go: "1.19"
     checks:  # https://staticcheck.io/docs/options#checks
