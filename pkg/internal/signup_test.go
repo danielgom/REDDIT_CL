@@ -7,6 +7,7 @@ import (
 )
 
 func TestValidate(t *testing.T) {
+	t.Parallel()
 	tCase := []struct {
 		name     string
 		username string
@@ -21,7 +22,9 @@ func TestValidate(t *testing.T) {
 	}
 
 	for _, test := range tCase {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			req := RegisterRequest{
 				Username: test.username,
 				Password: test.password,

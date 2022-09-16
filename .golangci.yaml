@@ -77,9 +77,8 @@ linters:
     - wrapcheck
 
     # I'd like to be able to use these, but we need to rework some code
-    # - gochecknoglobals
-    # - paralleltest
-    # - testpackage
+    - gochecknoglobals
+    - paralleltest
 
   don't enable:
     - exhaustruct  # we don't want to define every attribute

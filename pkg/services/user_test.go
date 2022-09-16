@@ -13,6 +13,7 @@ import (
 )
 
 func TestUserSvc_SignUp(t *testing.T) {
+	t.Parallel()
 	rr := internal.RegisterRequest{
 		Username: "Daniel",
 		Password: "P@ssw0rd123123",
