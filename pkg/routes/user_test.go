@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"RD-Clone-API/pkg/routes/mock_services"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,7 +8,7 @@ import (
 	"testing"
 
 	"RD-Clone-API/pkg/internal"
-
+	"RD-Clone-API/pkg/routes/mock_services"
 	"github.com/golang/mock/gomock"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"

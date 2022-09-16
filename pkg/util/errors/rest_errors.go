@@ -7,73 +7,83 @@ import (
 	"net/http"
 )
 
-var (
-	errInvalidJSON = errors.New("invalid json")
-)
+var errInvalidJSON = errors.New("invalid json")
 
-// RestErr is a common interface where we can create different kind of errors.
-type RestErr interface {
+// CommonError is a common interface where we can create different kind of errors.
+type CommonError interface {
 	Message() string
 	Status() int
 	Error() string
-	Causes() []interface{}
+	Cause() interface{}
 }
 
-type commonError struct {
-	M string        `json:"message"`
-	S int           `json:"status"`
-	E string        `json:"error"`
-	C []interface{} `json:"causes"`
+type restError struct {
+	M string      `json:"message"`
+	S int         `json:"status"`
+	E string      `json:"error"`
+	C interface{} `json:"causes"`
 }
 
-func (r *commonError) Message() string {
+func (r *restError) Message() string {
 	return r.M
 }
 
-func (r *commonError) Status() int {
+func (r *restError) Status() int {
 	return r.S
 }
 
-func (r *commonError) Error() string {
+func (r *restError) Error() string {
 	return r.E
 }
 
-func (r *commonError) Causes() []interface{} {
+func (r *restError) Cause() interface{} {
 	return r.C
 }
 
 // NewRestError creates an error based on user input.
-func NewRestError(message string, status int, err string, causes []interface{}) RestErr {
-	return &commonError{
+func NewRestError(message string, status int, errStr string, err error) CommonError {
+	r := &restError{
 		M: message,
 		S: status,
-		E: err,
-		C: causes,
+		E: errStr,
+		C: message,
 	}
+	if err != nil {
+		r.C = err.Error()
+	}
+
+	return r
 }
 
 // NewRestErrorFromBytes is based on upcoming bytes.
-func NewRestErrorFromBytes(b []byte) (RestErr, error) {
-	var r commonError
+func NewRestErrorFromBytes(b []byte) (CommonError, error) {
+	var r restError
 	if err := json.Unmarshal(b, &r); err != nil {
 		return nil, errInvalidJSON
 	}
 	return &r, nil
 }
 
-// NewBadRequestError returns a bad request RestErr.
-func NewBadRequestError(m string) RestErr {
-	return &commonError{
+// NewBadRequestError returns a bad request CommonError.
+func NewBadRequestError(m string, err error) CommonError {
+	r := &restError{
 		M: m,
 		S: http.StatusBadRequest,
 		E: "Bad Request",
+		C: m,
 	}
+
+	if err != nil {
+		r.C = err.Error()
+	}
+
+	return r
 }
 
-// NewNotFoundError returns a bad request RestErr
+// NewNotFoundError returns a bad request CommonError
 // We normally error not found errors based on database response.
-func NewNotFoundError(m string) RestErr {
-	return &commonError{
+func NewNotFoundError(m string) CommonError {
+	return &restError{
 		M: m,
 		S: http.StatusNotFound,
 		E: "Not found",
@@ -81,21 +91,23 @@ func NewNotFoundError(m string) RestErr {
 }
 
 // NewInternalServerError returns an internal server error (such as DB calls or service-to-service calls).
-func NewInternalServerError(m string, err error) RestErr {
-	r := &commonError{
+func NewInternalServerError(m string, err error) CommonError {
+	r := &restError{
 		M: m,
 		S: http.StatusInternalServerError,
 		E: "Internal server error",
+		C: m,
 	}
+
 	if err != nil {
-		r.C = append(r.C, err.Error())
+		r.C = err.Error()
 	}
 	return r
 }
 
 // NewUnauthorisedError returns an Unauthorised error (no access to the api).
-func NewUnauthorisedError(m string) RestErr {
-	return &commonError{
+func NewUnauthorisedError(m string) CommonError {
+	return &restError{
 		M: m,
 		S: http.StatusUnauthorized,
 		E: "Unauthorised",

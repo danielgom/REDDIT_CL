@@ -3,11 +3,10 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	"RD-Clone-API/pkg/config"
 	"RD-Clone-API/pkg/model"
-
+	"RD-Clone-API/pkg/util/errors"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -21,29 +20,29 @@ func NewUserRepository(conn *pgxpool.Pool) UserRepository {
 }
 
 // FindByUsername finds a user by its username.
-func (r *userRepo) FindByUsername(ctx context.Context, uName string) (*model.User, error) {
+func (r *userRepo) FindByUsername(ctx context.Context, uName string) (*model.User, errors.CommonError) {
 	query := `SELECT * FROM users WHERE username=$1`
 
-	var user *model.User
+	var user model.User
 
-	err := r.DB.QueryRow(ctx, query, uName).Scan(&user.ID, &user.Username, &user.Password,
+	findErr := r.DB.QueryRow(ctx, query, uName).Scan(&user.ID, &user.Username, &user.Password,
 		&user.CreatedAt, &user.UpdatedAt, &user.Enabled)
-	if err != nil {
-		return nil, fmt.Errorf("could not get user %w", err)
+	if findErr != nil {
+		return nil, errors.NewInternalServerError("Database error", findErr)
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 // Save persists a user to the DB.
-func (r *userRepo) Save(ctx context.Context, user *model.User) (*model.User, error) {
+func (r *userRepo) Save(ctx context.Context, user *model.User) (*model.User, errors.CommonError) {
 	row := r.DB.QueryRow(ctx, `INSERT INTO users("username", "password", "email", "created_at", "updated_at", "enabled") 
 		VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, user.Username, user.Password, user.Email,
 		user.CreatedAt, user.UpdatedAt, user.Enabled)
 
-	err := row.Scan(&user.ID)
-	if err != nil {
-		return nil, fmt.Errorf("could not save user %w", err)
+	saveErr := row.Scan(&user.ID)
+	if saveErr != nil {
+		return nil, errors.NewInternalServerError("Database error", saveErr)
 	}
 
 	return user, nil

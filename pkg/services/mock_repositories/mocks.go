@@ -6,6 +6,7 @@ package mock_repositories
 
 import (
 	model "RD-Clone-API/pkg/model"
+	errors "RD-Clone-API/pkg/util/errors"
 	context "context"
 	reflect "reflect"
 
@@ -36,11 +37,11 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // FindByUsername mocks base method.
-func (m *MockUserRepository) FindByUsername(arg0 context.Context, arg1 string) (*model.User, error) {
+func (m *MockUserRepository) FindByUsername(arg0 context.Context, arg1 string) (*model.User, errors.CommonError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByUsername", arg0, arg1)
 	ret0, _ := ret[0].(*model.User)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(errors.CommonError)
 	return ret0, ret1
 }
 
@@ -51,11 +52,11 @@ func (mr *MockUserRepositoryMockRecorder) FindByUsername(arg0, arg1 interface{})
 }
 
 // Save mocks base method.
-func (m *MockUserRepository) Save(arg0 context.Context, arg1 *model.User) (*model.User, error) {
+func (m *MockUserRepository) Save(arg0 context.Context, arg1 *model.User) (*model.User, errors.CommonError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
 	ret0, _ := ret[0].(*model.User)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(errors.CommonError)
 	return ret0, ret1
 }
 
@@ -89,10 +90,10 @@ func (m *MockTokenRepository) EXPECT() *MockTokenRepositoryMockRecorder {
 }
 
 // Save mocks base method.
-func (m *MockTokenRepository) Save(arg0 context.Context, arg1 *model.VerificationToken) error {
+func (m *MockTokenRepository) Save(arg0 context.Context, arg1 *model.VerificationToken) errors.CommonError {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(errors.CommonError)
 	return ret0
 }
 

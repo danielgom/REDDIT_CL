@@ -4,15 +4,16 @@ import (
 	"context"
 
 	"RD-Clone-API/pkg/model"
+	"RD-Clone-API/pkg/util/errors"
 )
 
 // UserRepository serves as a middleware to call our userDB.
 type UserRepository interface {
-	FindByUsername(context.Context, string) (*model.User, error)
-	Save(context.Context, *model.User) (*model.User, error)
+	FindByUsername(context.Context, string) (*model.User, errors.CommonError)
+	Save(context.Context, *model.User) (*model.User, errors.CommonError)
 }
 
 // TokenRepository serves as a middleware to call our tokenDB.
 type TokenRepository interface {
-	Save(context.Context, *model.VerificationToken) error
+	Save(context.Context, *model.VerificationToken) errors.CommonError
 }

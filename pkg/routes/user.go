@@ -1,13 +1,14 @@
 // Package routes will be the responsible for adding all routes from the service.
+//
+//nolint:wrapcheck // Should not wrap JSON error
 package routes
 
 import (
-	"RD-Clone-API/pkg/services"
-	"errors"
 	"net/http"
 
 	"RD-Clone-API/pkg/internal"
-
+	"RD-Clone-API/pkg/services"
+	"RD-Clone-API/pkg/util/errors"
 	"github.com/labstack/echo/v4"
 )
 
@@ -31,17 +32,17 @@ func (h *UserHandler) SignUp(c echo.Context) error {
 	var req internal.RegisterRequest
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, errors.New("bad request"))
+		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
 	}
 
 	err := req.Validate()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
 	}
 
-	err = h.UsrSvc.SignUp(c.Request().Context(), &req)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+	signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
+	if signErr != nil {
+		return c.JSON(signErr.Status(), signErr)
 	}
 
 	return c.JSON(http.StatusCreated, "user has been registered")

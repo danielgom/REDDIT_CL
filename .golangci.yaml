@@ -34,9 +34,7 @@ linters:
     - godox
     - goerr113
     - gofmt
-    - gofumpt
     - goheader
-    - goimports
     - gomnd
     - gomoddirectives
     - gomodguard
@@ -119,9 +117,6 @@ linters-settings:
       - BUG
       - FIXME
       - HACK
-  gofumpt:
-    lang-version: "1.19"
-    extra-rules: true
   gosimple:
     go: "1.19"
     checks:  # https://staticcheck.io/docs/options#checks
@@ -160,37 +155,6 @@ linters-settings:
       rules:
         json: snake
 issues:
-  exclude-rules:
-    - path: cmd/*  # allow commands to use Printf/Println
-      linters: [ forbidigo ]
-    # TODO - remove this when possible
-    - path: internal/api/action/(action|invitation|notification).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/api/expr/(attrdemo|compute|expr|insight).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/api/(middleware|router|rule-validator|rules).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/httpcontext/httpcontext.go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/core/(config|const|init|logger).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/engine/engine.go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/rule/(deletedata|updatedata).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/testutils/(context|httpserver|time).go
-      text: comment
-      linters: [ revive, stylecheck ]
-    - path: internal/testutils/suite/(shorthands|suite).go
-      text: comment
-      linters: [ revive, stylecheck ]
   exclude-use-default: false
   exclude:
     - declaration of "err" shadows declaration at

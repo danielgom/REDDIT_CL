@@ -6,6 +6,7 @@ package mock_services
 
 import (
 	internal "RD-Clone-API/pkg/internal"
+	errors "RD-Clone-API/pkg/util/errors"
 	context "context"
 	reflect "reflect"
 
@@ -36,10 +37,10 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 }
 
 // SignUp mocks base method.
-func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRequest) error {
+func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRequest) errors.CommonError {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SignUp", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(errors.CommonError)
 	return ret0
 }
 

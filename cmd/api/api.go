@@ -2,18 +2,19 @@
 package main
 
 import (
-	"RD-Clone-API/pkg/config"
-	"RD-Clone-API/pkg/db"
-	"RD-Clone-API/pkg/routes"
-	"RD-Clone-API/pkg/services"
 	"context"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"RD-Clone-API/pkg/config"
+	"RD-Clone-API/pkg/db"
+	"RD-Clone-API/pkg/routes"
+	"RD-Clone-API/pkg/services"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 const defaultServerTimeout = time.Second * 5
@@ -57,5 +58,4 @@ func main() {
 		cancel()
 		log.Fatalln("server forced to shutdown: ", err)
 	}
-
 }

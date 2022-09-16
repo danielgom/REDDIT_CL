@@ -2,14 +2,15 @@
 package services
 
 import (
-	"RD-Clone-API/pkg/db"
 	"context"
+	"net/http"
 	"time"
 
+	"RD-Clone-API/pkg/db"
 	"RD-Clone-API/pkg/internal"
 	"RD-Clone-API/pkg/model"
 	"RD-Clone-API/pkg/util"
-
+	"RD-Clone-API/pkg/util/errors"
 	"github.com/google/uuid"
 )
 
@@ -26,12 +27,13 @@ func NewUserService(uR db.UserRepository, tR db.TokenRepository) UserService {
 }
 
 // SignUp executes core logic in order to save the user and generate its verification token for the first time.
-func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) error {
+func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) errors.CommonError {
 	var user model.User
 
 	pass, err := util.HashPassword(req.Password)
 	if err != nil {
-		return err
+		return errors.NewRestError("password not encrypted",
+			http.StatusInternalServerError, "Internal server error", err)
 	}
 
 	currentTime := time.Now().Local()
@@ -42,14 +44,14 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) err
 	user.CreatedAt = currentTime
 	user.UpdatedAt = currentTime
 
-	_, err = u.UserDB.Save(ctx, &user)
-	if err != nil {
-		return err
+	_, saveErr := u.UserDB.Save(ctx, &user)
+	if saveErr != nil {
+		return saveErr
 	}
 
-	token, err := u.generateVerificationToken(ctx, &user)
-	if err != nil {
-		return err
+	token, tknErr := u.generateVerificationToken(ctx, &user)
+	if tknErr != nil {
+		return tknErr
 	}
 
 	go util.SendMail("Activate Spring reddit CL account", "Thank you for signing up to Spring reddit service,"+
@@ -58,7 +60,7 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) err
 	return nil
 }
 
-func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.User) (string, error) {
+func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.User) (string, errors.CommonError) {
 	token := uuid.New().String()
 
 	var vToken model.VerificationToken
@@ -67,9 +69,9 @@ func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.Use
 	vToken.User = user
 	vToken.ExpiryDate = time.Now().Add(time.Hour * verificationTokenExpiration)
 
-	err := u.TokenDB.Save(ctx, &vToken)
-	if err != nil {
-		return "", err
+	saveTknErr := u.TokenDB.Save(ctx, &vToken)
+	if saveTknErr != nil {
+		return "", saveTknErr
 	}
 
 	return token, nil
