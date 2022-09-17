@@ -54,8 +54,7 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) err
 		return tknErr
 	}
 
-	go util.SendMail("Activate Spring reddit CL account", "Thank you for signing up to Spring reddit service,"+
-		" please click the link below to activate your account"+"http://localhost:8080/api/auth/accountVerification/"+token, user.Email)
+	go util.SendRegistrationEmail(token, user.Email)
 
 	return nil
 }
