@@ -27,16 +27,17 @@ func NewUserService(uR db.UserRepository, tR db.TokenRepository) UserService {
 }
 
 // SignUp executes core logic in order to save the user and generate its verification token for the first time.
-func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) errors.CommonError {
-	var user model.User
-
+func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*internal.RegisterResponse,
+	errors.CommonError) {
 	pass, err := util.HashPassword(req.Password)
 	if err != nil {
-		return errors.NewRestError("password not encrypted",
+		return nil, errors.NewRestError("password not encrypted",
 			http.StatusInternalServerError, "Internal server error", err)
 	}
 
 	currentTime := time.Now().Local()
+
+	user := new(model.User)
 
 	user.Username = req.Username
 	user.Email = req.Email
@@ -44,19 +45,19 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) err
 	user.CreatedAt = currentTime
 	user.UpdatedAt = currentTime
 
-	_, saveErr := u.UserDB.Save(ctx, &user)
+	user, saveErr := u.UserDB.Save(ctx, user)
 	if saveErr != nil {
-		return saveErr
+		return nil, saveErr
 	}
 
-	token, tknErr := u.generateVerificationToken(ctx, &user)
+	token, tknErr := u.generateVerificationToken(ctx, user)
 	if tknErr != nil {
-		return tknErr
+		return nil, tknErr
 	}
 
 	go util.SendRegistrationEmail(token, user.Email)
 
-	return nil
+	return internal.BuildRegisterResponse(user), nil
 }
 
 func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.User) (string, errors.CommonError) {

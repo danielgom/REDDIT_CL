@@ -75,8 +75,6 @@ linters:
     - wastedassign
     - whitespace
     - wrapcheck
-
-    # I'd like to be able to use these, but we need to rework some code
     - gochecknoglobals
     - paralleltest
 
@@ -234,6 +232,3 @@ issues:
     #   should have a package comment,
     #   unless it's in another file for this package
 
-# run:
-#   skip-dirs:
-#     - test/testdata_etc

@@ -32,7 +32,7 @@ type sMTP struct {
 
 // LoadConfig gets the configuration in from .env files and stores the in Config struct.
 func LoadConfig() *Config {
-	viper.AddConfigPath("./pkg/config/envs")
+	viper.AddConfigPath("/Users/daniel.gomez2/GolandProjects/RD-Clone-API/pkg/config/envs")
 	viper.SetConfigName("dev")
 	viper.SetConfigType("env")
 

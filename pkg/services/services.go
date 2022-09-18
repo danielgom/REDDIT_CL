@@ -9,5 +9,5 @@ import (
 
 // UserService contains all the business logic for our user API.
 type UserService interface {
-	SignUp(context.Context, *internal.RegisterRequest) errors.CommonError
+	SignUp(context.Context, *internal.RegisterRequest) (*internal.RegisterResponse, errors.CommonError)
 }

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -35,13 +36,25 @@ func TestCreateUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	want := &internal.RegisterResponse{
+		Username: rr.Username,
+		Email:    rr.Email,
+		Enabled:  false,
+	}
+
 	mSvc := mock_services.NewMockUserService(ctrl)
-	mSvc.EXPECT().SignUp(c.Request().Context(), &rr).Return(nil)
+	mSvc.EXPECT().SignUp(c.Request().Context(), &rr).Return(want, nil)
 
 	h := NewUserHandler(mSvc)
 
 	err = h.SignUp(c)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusCreated, rec.Code)
-	require.Equal(t, "\"user has been registered\"", strings.TrimSpace(rec.Body.String()))
+	require.NoError(t, err)
+
+	responseString := rec.Body.String()
+
+	require.Contains(t, responseString, want.Email)
+	require.Contains(t, responseString, want.Username)
+	require.Contains(t, responseString, fmt.Sprintf("%v", want.Enabled)) // There should be a better way to test this
 }

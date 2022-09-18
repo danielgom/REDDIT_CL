@@ -37,11 +37,12 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 }
 
 // SignUp mocks base method.
-func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRequest) errors.CommonError {
+func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRequest) (*internal.RegisterResponse, errors.CommonError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SignUp", arg0, arg1)
-	ret0, _ := ret[0].(errors.CommonError)
-	return ret0
+	ret0, _ := ret[0].(*internal.RegisterResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
 }
 
 // SignUp indicates an expected call of SignUp.

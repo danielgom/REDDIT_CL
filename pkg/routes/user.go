@@ -1,6 +1,6 @@
 // Package routes will be the responsible for adding all routes from the service.
 //
-//nolint:wrapcheck // Should not wrap JSON error
+//nolint:wrapcheck // Should not wrap echo JSON error
 package routes
 
 import (
@@ -40,10 +40,10 @@ func (h *UserHandler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
 	}
 
-	signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
+	response, signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
 	if signErr != nil {
 		return c.JSON(signErr.Status(), signErr)
 	}
 
-	return c.JSON(http.StatusCreated, "user has been registered")
+	return c.JSON(http.StatusCreated, response)
 }

@@ -39,7 +39,17 @@ func TestUserSvc_SignUp(t *testing.T) {
 	tokenRepo.EXPECT().Save(ctx, gomock.Any()).Return(nil)
 	userRepo.EXPECT().Save(ctx, gomock.Any()).Return(&m, nil)
 
+	want := &internal.RegisterResponse{
+		Username: rr.Username,
+		Email:    rr.Email,
+		Enabled:  false,
+	}
+
 	service := NewUserService(userRepo, tokenRepo)
-	err := service.SignUp(ctx, &rr)
+	res, err := service.SignUp(ctx, &rr)
+
 	require.NoError(t, err)
+	require.Equal(t, want.Username, res.Username)
+	require.Equal(t, want.Enabled, res.Enabled)
+	require.Equal(t, want.Email, res.Email)
 }
