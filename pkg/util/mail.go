@@ -32,7 +32,8 @@ func sendMail(subject, body, to string) {
 
 // SendRegistrationEmail sends an email based on the subject, body and recipient.
 func SendRegistrationEmail(token, to string) {
-	basicMailRegistrationBody := "Thank you for signing up to Spring reddit service," +
-		" please click the link below to activate your account\n\n %s"
+	basicMailRegistrationBody := "Thank you for signing up to Go reddit-clone service," +
+		" please click the link below to activate your account\n\n" +
+		"http://localhost:8080/api/auth/accountVerification/%s"
 	sendMail("Activate Spring reddit CL account", fmt.Sprintf(basicMailRegistrationBody, token), to)
 }

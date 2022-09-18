@@ -37,7 +37,7 @@ func (h *UserHandler) SignUp(c echo.Context) error {
 
 	err := req.Validate()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
+		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid fields", err))
 	}
 
 	response, signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
