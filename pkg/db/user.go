@@ -21,17 +21,12 @@ func NewUserRepository(conn *pgxpool.Pool) UserRepository {
 
 // FindByUsername finds a user by its username.
 func (r *userRepo) FindByUsername(ctx context.Context, uName string) (*model.User, errors.CommonError) {
-	query := `SELECT * FROM users WHERE username=$1`
+	return r.findUser(ctx, `SELECT * FROM users WHERE username=$1`, uName)
+}
 
-	var user model.User
-
-	findErr := r.DB.QueryRow(ctx, query, uName).Scan(&user.ID, &user.Username, &user.Password,
-		&user.CreatedAt, &user.UpdatedAt, &user.Enabled)
-	if findErr != nil {
-		return nil, errors.NewInternalServerError("Database error", findErr)
-	}
-
-	return &user, nil
+// FindByEmail finds a user by its email.
+func (r *userRepo) FindByEmail(ctx context.Context, email string) (*model.User, errors.CommonError) {
+	return r.findUser(ctx, `SELECT * FROM users WHERE email=$1`, email)
 }
 
 // Save persists a user to the DB.
@@ -46,4 +41,31 @@ func (r *userRepo) Save(ctx context.Context, user *model.User) (*model.User, err
 	}
 
 	return user, nil
+}
+
+func (r *userRepo) Update(ctx context.Context, user *model.User) errors.CommonError {
+	exec, err := r.DB.Exec(ctx, `UPDATE users SET password=$2, email=$3, updated_at=$4, enabled=$5 WHERE username=$1`,
+		user.Username, user.Password, user.Email, user.UpdatedAt, user.Enabled)
+
+	if err != nil {
+		return errors.NewInternalServerError("Database error", err)
+	}
+
+	if exec.RowsAffected() != 1 {
+		return errors.NewInternalServerError("Database error", err)
+	}
+
+	return nil
+}
+
+func (r *userRepo) findUser(ctx context.Context, query string, args ...any) (*model.User, errors.CommonError) {
+	var user model.User
+
+	findErr := r.DB.QueryRow(ctx, query, args...).Scan(&user.ID, &user.Username, &user.Password, &user.Email,
+		&user.CreatedAt, &user.UpdatedAt, &user.Enabled)
+	if findErr != nil {
+		return nil, errors.NewInternalServerError("Database error", findErr)
+	}
+
+	return &user, nil
 }

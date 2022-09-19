@@ -36,6 +36,21 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 	return m.recorder
 }
 
+// FindByEmail mocks base method.
+func (m *MockUserRepository) FindByEmail(arg0 context.Context, arg1 string) (*model.User, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByEmail", arg0, arg1)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// FindByEmail indicates an expected call of FindByEmail.
+func (mr *MockUserRepositoryMockRecorder) FindByEmail(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockUserRepository)(nil).FindByEmail), arg0, arg1)
+}
+
 // FindByUsername mocks base method.
 func (m *MockUserRepository) FindByUsername(arg0 context.Context, arg1 string) (*model.User, errors.CommonError) {
 	m.ctrl.T.Helper()
@@ -66,6 +81,20 @@ func (mr *MockUserRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockUserRepository)(nil).Save), arg0, arg1)
 }
 
+// Update mocks base method.
+func (m *MockUserRepository) Update(arg0 context.Context, arg1 *model.User) errors.CommonError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret0, _ := ret[0].(errors.CommonError)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockUserRepositoryMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUserRepository)(nil).Update), arg0, arg1)
+}
+
 // MockTokenRepository is a mock of TokenRepository interface.
 type MockTokenRepository struct {
 	ctrl     *gomock.Controller
@@ -87,6 +116,21 @@ func NewMockTokenRepository(ctrl *gomock.Controller) *MockTokenRepository {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTokenRepository) EXPECT() *MockTokenRepositoryMockRecorder {
 	return m.recorder
+}
+
+// FindByToken mocks base method.
+func (m *MockTokenRepository) FindByToken(arg0 context.Context, arg1 string) (*model.VerificationToken, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByToken", arg0, arg1)
+	ret0, _ := ret[0].(*model.VerificationToken)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// FindByToken indicates an expected call of FindByToken.
+func (mr *MockTokenRepositoryMockRecorder) FindByToken(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByToken", reflect.TypeOf((*MockTokenRepository)(nil).FindByToken), arg0, arg1)
 }
 
 // Save mocks base method.

@@ -36,6 +36,21 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
+// Login mocks base method.
+func (m *MockUserService) Login(arg0 context.Context, arg1 *internal.LoginRequest) (*internal.LoginResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", arg0, arg1)
+	ret0, _ := ret[0].(*internal.LoginResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockUserServiceMockRecorder) Login(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserService)(nil).Login), arg0, arg1)
+}
+
 // SignUp mocks base method.
 func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRequest) (*internal.RegisterResponse, errors.CommonError) {
 	m.ctrl.T.Helper()
@@ -49,4 +64,18 @@ func (m *MockUserService) SignUp(arg0 context.Context, arg1 *internal.RegisterRe
 func (mr *MockUserServiceMockRecorder) SignUp(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignUp", reflect.TypeOf((*MockUserService)(nil).SignUp), arg0, arg1)
+}
+
+// VerifyAccount mocks base method.
+func (m *MockUserService) VerifyAccount(arg0 context.Context, arg1 string) errors.CommonError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyAccount", arg0, arg1)
+	ret0, _ := ret[0].(errors.CommonError)
+	return ret0
+}
+
+// VerifyAccount indicates an expected call of VerifyAccount.
+func (mr *MockUserServiceMockRecorder) VerifyAccount(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAccount", reflect.TypeOf((*MockUserService)(nil).VerifyAccount), arg0, arg1)
 }

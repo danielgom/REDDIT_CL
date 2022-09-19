@@ -31,3 +31,20 @@ func (r *tokenRepo) Save(ctx context.Context, token *model.VerificationToken) er
 	}
 	return nil
 }
+
+func (r *tokenRepo) FindByToken(ctx context.Context, token string) (*model.VerificationToken, errors.CommonError) {
+	var verToken model.VerificationToken
+	var user model.User
+
+	row := r.DB.QueryRow(ctx, `SELECT * FROM verification_token t JOIN users u on u.id = t.id WHERE t.token=$1`, token)
+	err := row.Scan(&verToken.ID, &verToken.Token, &verToken.ExpiryDate, &user.ID, &user.Username,
+		&user.Password, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.Enabled)
+
+	if err != nil {
+		return nil, errors.NewInternalServerError("Database error", err)
+	}
+
+	verToken.User = &user
+
+	return &verToken, nil
+}

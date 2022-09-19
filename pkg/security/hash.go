@@ -1,4 +1,5 @@
-package util
+// Package security handles all security concerns such as password encryption and JWT generation and validation.
+package security
 
 import (
 	"fmt"
@@ -17,8 +18,8 @@ func HashPassword(password string) (string, error) {
 	return string(hPass), nil
 }
 
-// CheckPasswordHash checks whether the password provided is the correct one.
-func CheckPasswordHash(password, hash string) bool {
+// IsCorrectPassword checks whether the password provided is the correct one.
+func IsCorrectPassword(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }

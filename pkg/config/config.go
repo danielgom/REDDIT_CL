@@ -12,6 +12,7 @@ type Config struct {
 	Port string `mapstructure:"PORT"`
 	DB   dB     `mapstructure:",squash"`
 	SMTP sMTP   `mapstructure:",squash"`
+	JWT  jwt    `mapstructure:",squash"`
 }
 
 type dB struct {
@@ -28,6 +29,11 @@ type sMTP struct {
 	Port     string `mapstructure:"SMTP_PORT"`
 	Username string `mapstructure:"SMTP_USERNAME"`
 	Password string `mapstructure:"SMTP_PASSWORD"`
+}
+
+type jwt struct {
+	Expiration int32  `mapstructure:"JWT_EXPIRATION_SECS"`
+	Key        string `mapstructure:"JWT_KEY"`
 }
 
 // LoadConfig gets the configuration in from .env files and stores the in Config struct.
