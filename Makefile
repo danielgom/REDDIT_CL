@@ -1,4 +1,4 @@
-.PHONY: genM test
+.PHONY: genM test lint
 
 # Generates mocks Repositories and Services mocks for testing
 genM:
@@ -8,4 +8,6 @@ genM:
 # Test with coverage
 test: genM
 	@go test ./... --cover
-	
+
+lint:
+	@golangci-lint run
