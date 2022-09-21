@@ -15,6 +15,9 @@ import (
 
 const refreshTokenTest = "123123-asda1-123123"
 
+var errSaveRefreshT = fmt.Errorf("could not save token")
+var errGetRefreshT = fmt.Errorf("could not get token")
+
 func TestRefreshTokenService(t *testing.T) {
 	t.Parallel()
 	for scenario, fn := range map[string]func(t *testing.T, r *mock_repositories.MockRefreshTokenRepository,
@@ -65,7 +68,7 @@ func testRTCreateDBErr(t *testing.T, rTRepo *mock_repositories.MockRefreshTokenR
 
 	ctx := context.Background()
 
-	testErr := errors.NewInternalServerError("Database error", fmt.Errorf("could not save token"))
+	testErr := errors.NewInternalServerError("Database error", errSaveRefreshT)
 	rTRepo.EXPECT().Save(ctx, gomock.Any()).Return(testErr)
 
 	rToken, commonError := svc.Create(ctx)
@@ -92,8 +95,7 @@ func testRefreshTokenValidation(t *testing.T, rTRepo *mock_repositories.MockRefr
 func testRTValidationDBErr(t *testing.T, rTRepo *mock_repositories.MockRefreshTokenRepository, svc RefreshTokenService) {
 	t.Helper()
 
-	err := fmt.Errorf("could not get token")
-	testErr := errors.NewInternalServerError("Database error", err)
+	testErr := errors.NewInternalServerError("Database error", errGetRefreshT)
 
 	ctx := context.Background()
 	rTRepo.EXPECT().FindByToken(ctx, gomock.Eq(refreshTokenTest)).Return(nil, testErr)

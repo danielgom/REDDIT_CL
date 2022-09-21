@@ -1,7 +1,6 @@
 package services
 
 import (
-	"RD-Clone-API/pkg/util/errors"
 	"context"
 	"fmt"
 	"testing"
@@ -11,9 +10,13 @@ import (
 	"RD-Clone-API/pkg/model"
 	"RD-Clone-API/pkg/services/mock_repositories"
 	"RD-Clone-API/pkg/services/mock_services"
+	"RD-Clone-API/pkg/util/errors"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
+
+var errSaveTkn = fmt.Errorf("could not save token to db")
+var errSaveUser = fmt.Errorf("could not save user to db")
 
 func TestUserService(t *testing.T) {
 	t.Parallel()
@@ -100,8 +103,7 @@ func testUserSignUpDBErr(t *testing.T, uR *mock_repositories.MockUserRepository,
 	}
 
 	ctx := context.Background()
-	err := fmt.Errorf("could not save user to db")
-	saveErr := errors.NewInternalServerError("could not create user", err)
+	saveErr := errors.NewInternalServerError("could not create user", errSaveUser)
 
 	uR.EXPECT().Save(ctx, gomock.Any()).Return(nil, saveErr)
 	res, err := userSvc.SignUp(ctx, &rr)
@@ -130,8 +132,7 @@ func testUserServiceSignUpTknDBErr(t *testing.T, uR *mock_repositories.MockUserR
 	}
 
 	ctx := context.Background()
-	err := fmt.Errorf("could not save token to db")
-	saveErr := errors.NewInternalServerError("could not create token", err)
+	saveErr := errors.NewInternalServerError("could not create token", errSaveTkn)
 
 	uR.EXPECT().Save(ctx, gomock.Any()).Return(&m, nil)
 	tknRepo.EXPECT().Save(ctx, gomock.Any()).Return(saveErr)
@@ -142,7 +143,7 @@ func testUserServiceSignUpTknDBErr(t *testing.T, uR *mock_repositories.MockUserR
 }
 
 func testVerifyAccount(t *testing.T, uR *mock_repositories.MockUserRepository,
-	tknRepo *mock_repositories.MockTokenRepository, rTSvc *mock_services.MockRefreshTokenService, userSvc UserService) {
+	tknRepo *mock_repositories.MockTokenRepository, _ *mock_services.MockRefreshTokenService, userSvc UserService) {
 	t.Helper()
 
 	testVerToken := "abc123"
