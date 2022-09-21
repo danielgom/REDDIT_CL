@@ -22,19 +22,20 @@ const verificationTokenExpiration = 24
 var errInvalidLoginRequest = mErr.New("please provide a username or an email")
 
 type userSvc struct {
-	UserDB  db.UserRepository
-	TokenDB db.TokenRepository
+	userDB  db.UserRepository
+	tokenDB db.TokenRepository
+	rtSvc   RefreshTokenService
 }
 
 // NewUserService returns a new instance of user service.
-func NewUserService(uR db.UserRepository, tR db.TokenRepository) UserService {
-	return &userSvc{UserDB: uR, TokenDB: tR}
+func NewUserService(uR db.UserRepository, tR db.TokenRepository, rTSvc RefreshTokenService) UserService {
+	return &userSvc{userDB: uR, tokenDB: tR, rtSvc: rTSvc}
 }
 
 // SignUp executes core logic in order to save the user and generate its verification token for the first time.
 func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*internal.RegisterResponse,
 	errors.CommonError) {
-	pass, err := security.HashPassword(req.Password)
+	pass, err := security.Hash(req.Password)
 	if err != nil {
 		return nil, errors.NewRestError("password not encrypted",
 			http.StatusInternalServerError, "Internal server error", err)
@@ -50,7 +51,7 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*i
 	user.CreatedAt = currentTime
 	user.UpdatedAt = currentTime
 
-	user, saveErr := u.UserDB.Save(ctx, user)
+	user, saveErr := u.userDB.Save(ctx, user)
 	if saveErr != nil {
 		return nil, saveErr
 	}
@@ -65,8 +66,9 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*i
 	return internal.BuildRegisterResponse(user), nil
 }
 
+// VerifyAccount verifies the account.
 func (u *userSvc) VerifyAccount(ctx context.Context, tStr string) errors.CommonError {
-	token, verErr := u.TokenDB.FindByToken(ctx, tStr)
+	token, verErr := u.tokenDB.FindByToken(ctx, tStr)
 
 	if verErr != nil {
 		return verErr
@@ -75,7 +77,7 @@ func (u *userSvc) VerifyAccount(ctx context.Context, tStr string) errors.CommonE
 	token.User.Enabled = true
 	token.User.UpdatedAt = time.Now()
 
-	updateErr := u.UserDB.Update(ctx, token.User)
+	updateErr := u.userDB.Update(ctx, token.User)
 
 	if updateErr != nil {
 		return updateErr
@@ -84,6 +86,7 @@ func (u *userSvc) VerifyAccount(ctx context.Context, tStr string) errors.CommonE
 	return nil
 }
 
+// Login validates username/email and password returning a JWT token and a refresh token with expiration.
 func (u *userSvc) Login(ctx context.Context, loginReq *internal.LoginRequest) (*internal.LoginResponse, errors.CommonError) {
 	var user *model.User
 	var findErr errors.CommonError
@@ -94,26 +97,31 @@ func (u *userSvc) Login(ctx context.Context, loginReq *internal.LoginRequest) (*
 
 	_, err := mail.ParseAddress(loginReq.UserOrEmail)
 	if err != nil {
-		user, findErr = u.UserDB.FindByUsername(ctx, loginReq.UserOrEmail)
+		user, findErr = u.userDB.FindByUsername(ctx, loginReq.UserOrEmail)
 	} else {
-		user, findErr = u.UserDB.FindByEmail(ctx, loginReq.UserOrEmail)
+		user, findErr = u.userDB.FindByEmail(ctx, loginReq.UserOrEmail)
 	}
 
 	if findErr != nil {
 		return nil, findErr
 	}
 
-	validPass := security.IsCorrectPassword(loginReq.Password, user.Password)
+	validPass := security.CheckHash(loginReq.Password, user.Password)
 	if !validPass {
 		return nil, errors.NewUnauthorisedError("invalid password")
 	}
 
-	JWT, err := security.GenerateTokenWithExp(user)
+	JWT, expDate, err := security.GenerateTokenWithExp(user)
 	if err != nil {
 		return nil, errors.NewInternalServerError("internal error", err)
 	}
 
-	return internal.BuildLoginResponse(user.Username, user.Email, JWT), nil
+	refreshToken, createRTErr := u.rtSvc.Create(ctx)
+	if createRTErr != nil {
+		return nil, createRTErr
+	}
+
+	return internal.BuildLoginResponse(user.Username, user.Email, JWT, refreshToken, expDate), nil
 }
 
 func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.User) (string, errors.CommonError) {
@@ -125,7 +133,7 @@ func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.Use
 	vToken.User = user
 	vToken.ExpiryDate = time.Now().Add(time.Hour * verificationTokenExpiration)
 
-	saveTknErr := u.TokenDB.Save(ctx, &vToken)
+	saveTknErr := u.tokenDB.Save(ctx, &vToken)
 	if saveTknErr != nil {
 		return "", saveTknErr
 	}

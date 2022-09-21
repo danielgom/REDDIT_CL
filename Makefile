@@ -9,5 +9,6 @@ genM:
 test: genM
 	@go test ./... --cover
 
+# Checks code with golangci-lint linters
 lint:
 	@golangci-lint run

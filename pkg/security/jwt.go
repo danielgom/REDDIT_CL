@@ -10,14 +10,14 @@ import (
 )
 
 // GenerateTokenWithExp generates a JWT with an expiration of 1 hour (exp time comes from the config).
-func GenerateTokenWithExp(user *model.User) (string, error) {
+func GenerateTokenWithExp(user *model.User) (string, time.Time, error) {
 	jwtConfig := config.LoadConfig().JWT
 
 	currentTime := time.Now().Local()
+	expirationDate := currentTime.Add(time.Second * time.Duration(jwtConfig.Expiration))
 
 	claims := jwt.StandardClaims{
-		ExpiresAt: currentTime.Add(time.Second * time.Duration(jwtConfig.Expiration)).Unix(),
-		Id:        "",
+		ExpiresAt: expirationDate.Unix(),
 		IssuedAt:  currentTime.Unix(),
 		Issuer:    "GO-Reddit-CL",
 		Subject:   user.Email,
@@ -27,8 +27,8 @@ func GenerateTokenWithExp(user *model.User) (string, error) {
 	signedToken, err := token.SignedString([]byte(jwtConfig.Key))
 
 	if err != nil {
-		return "", fmt.Errorf("could not generate JWT %w please try again", err)
+		return "", time.Time{}, fmt.Errorf("could not generate JWT %w please try again", err)
 	}
 
-	return signedToken, nil
+	return signedToken, expirationDate, nil
 }

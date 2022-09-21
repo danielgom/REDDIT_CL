@@ -9,17 +9,17 @@ import (
 
 const passwordHashDifficulty = 10
 
-// HashPassword produces a encrypted password.
-func HashPassword(password string) (string, error) {
-	hPass, err := bcrypt.GenerateFromPassword([]byte(password), passwordHashDifficulty)
+// Hash produces an encrypted string.
+func Hash(str string) (string, error) {
+	hStr, err := bcrypt.GenerateFromPassword([]byte(str), passwordHashDifficulty)
 	if err != nil {
 		return "", fmt.Errorf("could encrypt password %w", err)
 	}
-	return string(hPass), nil
+	return string(hStr), nil
 }
 
-// IsCorrectPassword checks whether the password provided is the correct one.
-func IsCorrectPassword(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+// CheckHash checks whether the password provided is the correct one.
+func CheckHash(str, hashed string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(str))
 	return err == nil
 }

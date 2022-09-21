@@ -146,3 +146,55 @@ func (mr *MockTokenRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockTokenRepository)(nil).Save), arg0, arg1)
 }
+
+// MockRefreshTokenRepository is a mock of RefreshTokenRepository interface.
+type MockRefreshTokenRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockRefreshTokenRepositoryMockRecorder
+}
+
+// MockRefreshTokenRepositoryMockRecorder is the mock recorder for MockRefreshTokenRepository.
+type MockRefreshTokenRepositoryMockRecorder struct {
+	mock *MockRefreshTokenRepository
+}
+
+// NewMockRefreshTokenRepository creates a new mock instance.
+func NewMockRefreshTokenRepository(ctrl *gomock.Controller) *MockRefreshTokenRepository {
+	mock := &MockRefreshTokenRepository{ctrl: ctrl}
+	mock.recorder = &MockRefreshTokenRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRefreshTokenRepository) EXPECT() *MockRefreshTokenRepositoryMockRecorder {
+	return m.recorder
+}
+
+// FindByToken mocks base method.
+func (m *MockRefreshTokenRepository) FindByToken(arg0 context.Context, arg1 string) (*model.RefreshToken, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByToken", arg0, arg1)
+	ret0, _ := ret[0].(*model.RefreshToken)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// FindByToken indicates an expected call of FindByToken.
+func (mr *MockRefreshTokenRepositoryMockRecorder) FindByToken(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByToken", reflect.TypeOf((*MockRefreshTokenRepository)(nil).FindByToken), arg0, arg1)
+}
+
+// Save mocks base method.
+func (m *MockRefreshTokenRepository) Save(arg0 context.Context, arg1 *model.RefreshToken) errors.CommonError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0, arg1)
+	ret0, _ := ret[0].(errors.CommonError)
+	return ret0
+}
+
+// Save indicates an expected call of Save.
+func (mr *MockRefreshTokenRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockRefreshTokenRepository)(nil).Save), arg0, arg1)
+}

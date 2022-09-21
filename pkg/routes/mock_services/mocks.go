@@ -79,3 +79,55 @@ func (mr *MockUserServiceMockRecorder) VerifyAccount(arg0, arg1 interface{}) *go
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAccount", reflect.TypeOf((*MockUserService)(nil).VerifyAccount), arg0, arg1)
 }
+
+// MockRefreshTokenService is a mock of RefreshTokenService interface.
+type MockRefreshTokenService struct {
+	ctrl     *gomock.Controller
+	recorder *MockRefreshTokenServiceMockRecorder
+}
+
+// MockRefreshTokenServiceMockRecorder is the mock recorder for MockRefreshTokenService.
+type MockRefreshTokenServiceMockRecorder struct {
+	mock *MockRefreshTokenService
+}
+
+// NewMockRefreshTokenService creates a new mock instance.
+func NewMockRefreshTokenService(ctrl *gomock.Controller) *MockRefreshTokenService {
+	mock := &MockRefreshTokenService{ctrl: ctrl}
+	mock.recorder = &MockRefreshTokenServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRefreshTokenService) EXPECT() *MockRefreshTokenServiceMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockRefreshTokenService) Create(arg0 context.Context) (string, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockRefreshTokenServiceMockRecorder) Create(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRefreshTokenService)(nil).Create), arg0)
+}
+
+// Validate mocks base method.
+func (m *MockRefreshTokenService) Validate(arg0 context.Context, arg1 string) errors.CommonError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Validate", arg0, arg1)
+	ret0, _ := ret[0].(errors.CommonError)
+	return ret0
+}
+
+// Validate indicates an expected call of Validate.
+func (mr *MockRefreshTokenServiceMockRecorder) Validate(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Validate", reflect.TypeOf((*MockRefreshTokenService)(nil).Validate), arg0, arg1)
+}

@@ -21,3 +21,10 @@ type VerificationToken struct {
 	User       *User
 	ExpiryDate time.Time
 }
+
+// RefreshToken is the token used to create a new JWT token if it has already expired.
+type RefreshToken struct {
+	ID        int
+	Token     string
+	ExpiresAt time.Time
+}

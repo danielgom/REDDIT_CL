@@ -12,7 +12,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setup(t *testing.T) (*mock_repositories.MockUserRepository, *mock_repositories.MockTokenRepository, UserService, func()) {
+func setupUserSvc(t *testing.T) (*mock_repositories.MockUserRepository, *mock_repositories.MockTokenRepository,
+	UserService, func()) {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 
@@ -30,7 +31,7 @@ func setup(t *testing.T) (*mock_repositories.MockUserRepository, *mock_repositor
 func TestUserSvc_SignUp(t *testing.T) {
 	t.Parallel()
 
-	userRepo, tokenRepo, svc, teardown := setup(t)
+	userRepo, tokenRepo, svc, teardown := setupUserSvc(t)
 	defer teardown()
 
 	rr := internal.RegisterRequest{
@@ -69,7 +70,7 @@ func TestUserSvc_SignUp(t *testing.T) {
 func TestUserSvc_VerifyAccount(t *testing.T) {
 	t.Parallel()
 
-	userRepo, tokenRepo, svc, teardown := setup(t)
+	userRepo, tokenRepo, svc, teardown := setupUserSvc(t)
 	defer teardown()
 
 	testVerToken := "abc123"
@@ -99,7 +100,7 @@ func TestUserSvc_VerifyAccount(t *testing.T) {
 func TestUserSvc_LoginByUsername(t *testing.T) {
 	t.Parallel()
 
-	userRepo, _, svc, teardown := setup(t)
+	userRepo, _, svc, teardown := setupUserSvc(t)
 	defer teardown()
 
 	loginReq := &internal.LoginRequest{

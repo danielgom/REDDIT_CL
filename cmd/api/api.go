@@ -27,7 +27,8 @@ func main() {
 	userRepository := db.NewUserRepository(DBc)
 	tokenRepository := db.NewTokenRepository(DBc)
 
-	userService := services.NewUserService(userRepository, tokenRepository)
+	refreshTokenService := services.NewRefreshTokenService()
+	userService := services.NewUserService(userRepository, tokenRepository, refreshTokenService)
 	userHandler := routes.NewUserHandler(userService)
 	userHandler.Register(r)
 
