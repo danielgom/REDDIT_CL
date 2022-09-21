@@ -7,6 +7,8 @@ import (
 	"RD-Clone-API/pkg/util/errors"
 )
 
+const errNotFound = "no rows in result set"
+
 // UserRepository serves as a middleware to call our users table.
 type UserRepository interface {
 	FindByUsername(context.Context, string) (*model.User, errors.CommonError)

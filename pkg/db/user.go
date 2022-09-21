@@ -3,6 +3,8 @@ package db
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"RD-Clone-API/pkg/config"
 	"RD-Clone-API/pkg/model"
@@ -64,6 +66,9 @@ func (r *userRepo) findUser(ctx context.Context, query string, args ...any) (*mo
 	findErr := r.DB.QueryRow(ctx, query, args...).Scan(&user.ID, &user.Username, &user.Password, &user.Email,
 		&user.CreatedAt, &user.UpdatedAt, &user.Enabled)
 	if findErr != nil {
+		if strings.Contains(findErr.Error(), errNotFound) {
+			return nil, errors.NewNotFoundError(fmt.Sprintf("user not found"))
+		}
 		return nil, errors.NewInternalServerError("Database error", findErr)
 	}
 

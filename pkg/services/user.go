@@ -69,7 +69,6 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*i
 // VerifyAccount verifies the account.
 func (u *userSvc) VerifyAccount(ctx context.Context, tStr string) errors.CommonError {
 	token, verErr := u.tokenDB.FindByToken(ctx, tStr)
-
 	if verErr != nil {
 		return verErr
 	}

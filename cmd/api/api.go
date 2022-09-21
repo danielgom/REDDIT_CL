@@ -24,10 +24,12 @@ func main() {
 	r := echo.New()
 
 	DBc := config.InitDatabase(c)
+
 	userRepository := db.NewUserRepository(DBc)
 	tokenRepository := db.NewTokenRepository(DBc)
+	refreshTokenRepository := db.NewRTRepository(DBc)
 
-	refreshTokenService := services.NewRefreshTokenService()
+	refreshTokenService := services.NewRefreshTokenService(refreshTokenRepository)
 	userService := services.NewUserService(userRepository, tokenRepository, refreshTokenService)
 	userHandler := routes.NewUserHandler(userService)
 	userHandler.Register(r)

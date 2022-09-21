@@ -32,6 +32,7 @@ func (r *tokenRepo) Save(ctx context.Context, token *model.VerificationToken) er
 	return nil
 }
 
+// FindByToken looks for a token.
 func (r *tokenRepo) FindByToken(ctx context.Context, token string) (*model.VerificationToken, errors.CommonError) {
 	var verToken model.VerificationToken
 	var user model.User

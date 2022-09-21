@@ -17,7 +17,8 @@ const refreshTokenTest = "123123-asda1-123123"
 
 func TestRefreshTokenService(t *testing.T) {
 	t.Parallel()
-	for scenario, fn := range map[string]func(t *testing.T, r *mock_repositories.MockRefreshTokenRepository, svc RefreshTokenService){
+	for scenario, fn := range map[string]func(t *testing.T, r *mock_repositories.MockRefreshTokenRepository,
+		svc RefreshTokenService){
 		"test creation of refresh token success":      testRefreshTokenCreate,
 		"test creation refresh token db err fails":    testRTCreateDBErr,
 		"test refresh token validation success":       testRefreshTokenValidation,
