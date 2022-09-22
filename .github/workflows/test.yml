@@ -23,6 +23,6 @@ jobs:
           version: latest
       - name: Test
         env:
-          CONFIG_PATH: ${{ env.GITHUB_WORKFLOW }}
+          CONFIG_PATH: ${{ github.workflow }}
         run: |
           make testCI
