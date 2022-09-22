@@ -3,9 +3,12 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
+
+const configPath = "CONFIG_PATH"
 
 // Config is where the global configuration is stored.
 type Config struct {
@@ -38,7 +41,12 @@ type jwt struct {
 
 // LoadConfig gets the configuration in from .env files and stores the in Config struct.
 func LoadConfig() *Config {
-	viper.AddConfigPath(".pkg/config/envs")
+	cPath := os.Getenv(configPath)
+	if cPath == "" {
+		log.Fatalln("CONFIG_PATH is not set")
+	}
+
+	viper.AddConfigPath(cPath + "/pkg/config/envs")
 	viper.SetConfigName("dev")
 	viper.SetConfigType("env")
 
