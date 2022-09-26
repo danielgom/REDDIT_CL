@@ -19,6 +19,7 @@ type DBConn interface {
 	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
 }
 
+// FakeScanner Probably won't use but should be used for mocking a scanner.
 type FakeScanner interface {
 	Scan(dest ...interface{}) error
 }
