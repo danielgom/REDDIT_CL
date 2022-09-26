@@ -45,14 +45,10 @@ func (r *userRepo) Save(ctx context.Context, user *model.User) (*model.User, err
 }
 
 func (r *userRepo) Update(ctx context.Context, user *model.User) errors.CommonError {
-	exec, err := r.DB.Exec(ctx, `UPDATE users SET password=$2, email=$3, updated_at=$4, enabled=$5 WHERE username=$1`,
+	_, err := r.DB.Exec(ctx, `UPDATE users SET password=$2, email=$3, updated_at=$4, enabled=$5 WHERE username=$1`,
 		user.Username, user.Password, user.Email, user.UpdatedAt, user.Enabled)
 
 	if err != nil {
-		return errors.NewInternalServerError("Database error", err)
-	}
-
-	if exec.RowsAffected() != 1 {
 		return errors.NewInternalServerError("Database error", err)
 	}
 

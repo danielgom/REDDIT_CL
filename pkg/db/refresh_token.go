@@ -20,16 +20,13 @@ func NewRTRepository(conn *pgxpool.Pool) RefreshTokenRepository {
 
 // Save persists a new refresh token to the DB.
 func (r *refreshTokenRepo) Save(ctx context.Context, token *model.RefreshToken) errors.CommonError {
-	exec, err := r.DB.Exec(ctx, `INSERT INTO refresh_token("token", "expires_at") VALUES($1, $2)`,
+	_, err := r.DB.Exec(ctx, `INSERT INTO refresh_token("token", "expires_at") VALUES($1, $2)`,
 		token.Token, token.ExpiresAt)
 
 	if err != nil {
 		return errors.NewInternalServerError("Database error", err)
 	}
 
-	if exec.RowsAffected() != 1 {
-		return errors.NewInternalServerError("Database error", err)
-	}
 	return nil
 }
 

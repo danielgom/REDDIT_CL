@@ -5,14 +5,15 @@ genM:
 	@mockgen -source=pkg/services/services.go -destination=pkg/routes/mock_services/mocks.go -package mock_services
 	@mockgen -source=pkg/services/services.go -destination=pkg/services/mock_services/mocks.go -package mock_services
 	@mockgen -source=pkg/db/repositories.go -destination=pkg/services/mock_repositories/mocks.go -package mock_repositories
+	@mockgen -source=pkg/config/datasource.go -destination=pkg/db/mock_db/mocks.go -package mock_db
 
 # Test with coverage (dev/local environment)
 testL: genM
-	@go test ./... --cover
+	@go test ./... --cover -v
 
 # Test with coverage (CI)
 testCI:
-	@go test ./... --cover
+	@go test ./... --cover -v
 
 # Checks code with golangci-lint linters
 lint:
