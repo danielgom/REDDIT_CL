@@ -19,9 +19,9 @@ var (
 
 // RegisterRequest comes from the signup request.
 type RegisterRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
 }
 
 // RegisterResponse is the struct for a successful signUp.
