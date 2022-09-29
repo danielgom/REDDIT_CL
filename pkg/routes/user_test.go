@@ -164,7 +164,7 @@ func testVerifyAccount(t *testing.T, h *UserHandler, svc *mock_services.MockUser
 	err := h.VerifyAccount(c)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, rec.Code)
-	require.Contains(t, rec.Body.String(), "Account has been successfully validated!")
+	require.Contains(t, rec.Body.String(), "Validated")
 }
 
 func testVerifyAccountSvcErr(t *testing.T, h *UserHandler, svc *mock_services.MockUserService) {

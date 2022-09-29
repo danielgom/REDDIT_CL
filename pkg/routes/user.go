@@ -59,8 +59,7 @@ func (h *UserHandler) VerifyAccount(c echo.Context) error {
 	if verifyErr != nil {
 		return c.JSON(http.StatusInternalServerError, verifyErr)
 	}
-
-	return c.JSON(http.StatusOK, "Account has been successfully validated!")
+	return c.JSON(http.StatusOK, map[string]interface{}{"account": "Validated", "status": http.StatusOK})
 }
 
 // Login returns a JWT based on the user that has been logged in.

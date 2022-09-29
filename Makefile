@@ -18,3 +18,6 @@ testCI:
 # Checks code with golangci-lint linters
 lint:
 	@golangci-lint run
+
+run:
+	@go run ./cmd/api
