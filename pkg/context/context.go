@@ -4,7 +4,6 @@
 package context
 
 import (
-	"fmt"
 	"net/http"
 
 	"RD-Clone-API/pkg/util/errors"
@@ -25,8 +24,6 @@ func (c *Context) BindAndValidate(req any, fn func() error) error {
 	if err := c.Validate(req); err != nil {
 		return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
 	}
-
-	fmt.Println("here omg")
 	err := fn()
 
 	if err != nil {

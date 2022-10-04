@@ -1,16 +1,13 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
 	"RD-Clone-API/pkg/context"
-	"RD-Clone-API/pkg/internal"
 	"RD-Clone-API/pkg/routes/mock_services"
 	"RD-Clone-API/pkg/util/errors"
 	"github.com/golang/mock/gomock"
@@ -18,20 +15,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var errSign = fmt.Errorf("could not sign up")
+// var errSign = fmt.Errorf("could not sign up").
 var errVerifyDB = fmt.Errorf("could not verify account")
 
 func TestUserHandler(t *testing.T) {
 	t.Parallel()
 	for scenario, fn := range map[string]func(t *testing.T, h *UserHandler, uSvc *mock_services.MockUserService){
-		//"test user sing up success":          testCreateUser,
+		// "test user sing up success":          testCreateUser,
 		"test create user bad request fails": testCreateUserBadJSON,
-		//"test create user invalid fields fails": testCreateUserValidation,
-		//"test create user service err fails ":   testCreateUserSvcErr,
+		// "test create user invalid fields fails": testCreateUserValidation,
+		// "test create user service err fails ":   testCreateUserSvcErr,
 		"test verify account success":           testVerifyAccount,
 		"test verify account service err fails": testVerifyAccountSvcErr,
-		//"test login success":                    testLogin,
-		//"test login service err fails":          testLoginSvcErr,
+		// "test login success":                    testLogin,
+		// "test login service err fails":          testLoginSvcErr,
 		"test login bad request fails": testLoginBadJSON,
 	} {
 		fn := fn
@@ -57,6 +54,7 @@ func setupUserSvc(t *testing.T) (*UserHandler, *mock_services.MockUserService, f
 	}
 }
 
+/*
 func testCreateUser(t *testing.T, h *UserHandler, svc *mock_services.MockUserService) {
 	t.Helper()
 	e := echo.New()
@@ -95,6 +93,8 @@ func testCreateUser(t *testing.T, h *UserHandler, svc *mock_services.MockUserSer
 	require.Contains(t, responseString, fmt.Sprintf("%v", want.Enabled)) // There should be a better way to test this
 }
 
+*/
+
 func testCreateUserBadJSON(t *testing.T, h *UserHandler, _ *mock_services.MockUserService) {
 	t.Helper()
 	e := echo.New()
@@ -110,6 +110,7 @@ func testCreateUserBadJSON(t *testing.T, h *UserHandler, _ *mock_services.MockUs
 	require.Equal(t, http.StatusBadRequest, rec.Code)
 }
 
+/*
 func testCreateUserValidation(t *testing.T, h *UserHandler, _ *mock_services.MockUserService) {
 	t.Helper()
 	e := echo.New()
@@ -150,6 +151,7 @@ func testCreateUserSvcErr(t *testing.T, h *UserHandler, svc *mock_services.MockU
 	require.Equal(t, http.StatusBadRequest, rec.Code)
 	require.Contains(t, rec.Body.String(), "could not sign up")
 }
+*/
 
 func testVerifyAccount(t *testing.T, h *UserHandler, svc *mock_services.MockUserService) {
 	t.Helper()
@@ -186,6 +188,7 @@ func testVerifyAccountSvcErr(t *testing.T, h *UserHandler, svc *mock_services.Mo
 	require.Equal(t, http.StatusInternalServerError, rec.Code)
 }
 
+/*
 func testLogin(t *testing.T, h *UserHandler, svc *mock_services.MockUserService) {
 	t.Helper()
 	e := echo.New()
@@ -225,7 +228,9 @@ func testLogin(t *testing.T, h *UserHandler, svc *mock_services.MockUserService)
 	require.Contains(t, responseString, want.Token)
 	require.Contains(t, responseString, want.RefreshToken)
 }
+*/
 
+/*
 func testLoginSvcErr(t *testing.T, h *UserHandler, svc *mock_services.MockUserService) {
 	t.Helper()
 	e := echo.New()
@@ -250,6 +255,7 @@ func testLoginSvcErr(t *testing.T, h *UserHandler, svc *mock_services.MockUserSe
 	require.Equal(t, http.StatusUnauthorized, rec.Code)
 	require.Contains(t, rec.Body.String(), "service error")
 }
+*/
 
 func testLoginBadJSON(t *testing.T, h *UserHandler, _ *mock_services.MockUserService) {
 	t.Helper()
