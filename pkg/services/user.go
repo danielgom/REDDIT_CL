@@ -3,7 +3,6 @@ package services
 
 import (
 	"context"
-	mErr "errors"
 	"net/http"
 	"net/mail"
 	"time"
@@ -18,8 +17,6 @@ import (
 )
 
 const verificationTokenExpiration = 24
-
-var errInvalidLoginRequest = mErr.New("please provide a username or an email")
 
 type userSvc struct {
 	userDB  db.UserRepository

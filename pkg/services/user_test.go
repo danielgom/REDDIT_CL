@@ -217,7 +217,6 @@ func testRefreshToken(t *testing.T, _ *mock_repositories.MockUserRepository,
 	require.Equal(t, want, resp.RefreshToken)
 	require.Equal(t, refReq.Username, resp.Username)
 	require.Greater(t, resp.ExpiresAt.Unix(), time.Now().Unix())
-
 }
 
 func testRefreshTokenExpired(t *testing.T, _ *mock_repositories.MockUserRepository,

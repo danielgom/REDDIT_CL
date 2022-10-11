@@ -8,6 +8,7 @@ type RefreshTokenRequest struct {
 	Username     string `json:"username" validate:"required"`
 }
 
+// RefreshTokenResponse response of a refresh token being used.
 type RefreshTokenResponse struct {
 	Username     string    `json:"username"`
 	Token        string    `json:"token"`
