@@ -110,13 +110,13 @@ linters-settings:
   gocyclo:
     min-complexity: 10
   godox:
-    keywords:  # default keywords are TODO, BUG, and FIXME
+    keywords: # default keywords are TODO, BUG, and FIXME
       - BUG
       - FIXME
       - HACK
   gosimple:
     go: "1.19"
-    checks:  # https://staticcheck.io/docs/options#checks
+    checks: # https://staticcheck.io/docs/options#checks
       - all
   govet:
     check-shadowing: true
@@ -153,6 +153,17 @@ linters-settings:
         json: snake
 issues:
   exclude-use-default: false
+  exclude-rules:
+    - path: "pkg/routes/user.go"
+      linters:
+        - wrapcheck
+        - dupl
+    - path: "pkg/context/context.go"
+      linters:
+        - wrapcheck
+    - path: "pkg/config/validator.go"
+      linters:
+        - wrapcheck
   exclude:
     - declaration of "err" shadows declaration at
 

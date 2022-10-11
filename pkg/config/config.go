@@ -1,4 +1,3 @@
-// Package config is the configuration package of all our tools
 package config
 
 import (

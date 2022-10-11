@@ -1,6 +1,4 @@
 // Package routes will be the responsible for adding all routes from the service.
-//
-//nolint:wrapcheck // Should not wrap echo JSON error
 package routes
 
 import (
@@ -35,17 +33,16 @@ func (h *UserHandler) Register(r *echo.Echo, handler func(fn func(context.Contex
 func (h *UserHandler) SignUp(c context.Context) error {
 	var req internal.RegisterRequest
 
-	return c.BindAndValidate(&req, func() error {
-		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, errors.NewBadRequestError("invalid json format", err))
-		}
-
-		response, signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
+	return c.BindAndValidateResp(&req, func() (*context.GResponse, errors.CommonError) {
+		res, signErr := h.UsrSvc.SignUp(c.Request().Context(), &req)
 		if signErr != nil {
-			return c.JSON(signErr.Status(), signErr)
+			return nil, signErr
 		}
 
-		return c.JSON(http.StatusCreated, response)
+		return &context.GResponse{
+			Status:   http.StatusCreated,
+			Response: res,
+		}, nil
 	})
 }
 
@@ -53,23 +50,31 @@ func (h *UserHandler) SignUp(c context.Context) error {
 func (h *UserHandler) VerifyAccount(c context.Context) error {
 	token := c.Param("token")
 
-	verifyErr := h.UsrSvc.VerifyAccount(c.Request().Context(), token)
-	if verifyErr != nil {
-		return c.JSON(http.StatusInternalServerError, verifyErr)
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{"account": "Validated", "status": http.StatusOK})
+	return c.NoBindResp(func() (*context.GResponse, errors.CommonError) {
+		verifyErr := h.UsrSvc.VerifyAccount(c.Request().Context(), token)
+		if verifyErr != nil {
+			return nil, verifyErr
+		}
+		return &context.GResponse{
+			Status:   http.StatusOK,
+			Response: map[string]interface{}{"account": "Validated", "status": http.StatusOK},
+		}, nil
+	})
 }
 
 // Login returns a JWT based on the user that has been logged in.
 func (h *UserHandler) Login(c context.Context) error {
 	var req internal.LoginRequest
 
-	return c.BindAndValidate(&req, func() error {
-		response, logErr := h.UsrSvc.Login(c.Request().Context(), &req)
+	return c.BindAndValidateResp(&req, func() (*context.GResponse, errors.CommonError) {
+		res, logErr := h.UsrSvc.Login(c.Request().Context(), &req)
 		if logErr != nil {
-			return c.JSON(logErr.Status(), logErr)
+			return nil, logErr
 		}
 
-		return c.JSON(http.StatusCreated, response)
+		return &context.GResponse{
+			Status:   http.StatusOK,
+			Response: res,
+		}, nil
 	})
 }
