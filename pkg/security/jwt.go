@@ -5,12 +5,11 @@ import (
 	"time"
 
 	"RD-Clone-API/pkg/config"
-	"RD-Clone-API/pkg/model"
 	"github.com/golang-jwt/jwt"
 )
 
 // GenerateTokenWithExp generates a JWT with an expiration of 1 hour (exp time comes from the config).
-func GenerateTokenWithExp(user *model.User) (string, time.Time, error) {
+func GenerateTokenWithExp(username string) (string, time.Time, error) {
 	jwtConfig := config.LoadConfig().JWT
 
 	currentTime := time.Now().Local()
@@ -20,7 +19,7 @@ func GenerateTokenWithExp(user *model.User) (string, time.Time, error) {
 		ExpiresAt: expirationDate.Unix(),
 		IssuedAt:  currentTime.Unix(),
 		Issuer:    "GO-Reddit-CL",
-		Subject:   user.Email,
+		Subject:   username,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

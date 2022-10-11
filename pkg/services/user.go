@@ -90,10 +90,6 @@ func (u *userSvc) Login(ctx context.Context, loginReq *internal.LoginRequest) (*
 	var user *model.User
 	var findErr errors.CommonError
 
-	if loginReq.UserOrEmail == "" {
-		return nil, errors.NewBadRequestError("Invalid login request", errInvalidLoginRequest)
-	}
-
 	_, err := mail.ParseAddress(loginReq.UserOrEmail)
 	if err != nil {
 		user, findErr = u.userDB.FindByUsername(ctx, loginReq.UserOrEmail)
@@ -110,7 +106,7 @@ func (u *userSvc) Login(ctx context.Context, loginReq *internal.LoginRequest) (*
 		return nil, errors.NewUnauthorisedError("invalid password")
 	}
 
-	JWT, expDate, err := security.GenerateTokenWithExp(user)
+	JWT, expDate, err := security.GenerateTokenWithExp(user.Username)
 	if err != nil {
 		return nil, errors.NewInternalServerError("internal error", err)
 	}
@@ -121,6 +117,31 @@ func (u *userSvc) Login(ctx context.Context, loginReq *internal.LoginRequest) (*
 	}
 
 	return internal.BuildLoginResponse(user.Username, user.Email, JWT, refreshToken, expDate), nil
+}
+
+func (u *userSvc) RefreshToken(ctx context.Context, rtReq *internal.RefreshTokenRequest) (*internal.RefreshTokenResponse,
+	errors.CommonError) {
+	validError := u.rtSvc.Validate(ctx, rtReq.RefreshToken)
+	if validError != nil {
+		return nil, validError
+	}
+
+	JWT, expDate, err := security.GenerateTokenWithExp(rtReq.Username)
+	if err != nil {
+		return nil, errors.NewInternalServerError("internal error", err)
+	}
+
+	refreshToken, createRTErr := u.rtSvc.Create(ctx)
+	if createRTErr != nil {
+		return nil, createRTErr
+	}
+
+	return &internal.RefreshTokenResponse{
+		Username:     rtReq.Username,
+		Token:        JWT,
+		RefreshToken: refreshToken,
+		ExpiresAt:    expDate,
+	}, nil
 }
 
 func (u *userSvc) generateVerificationToken(ctx context.Context, user *model.User) (string, errors.CommonError) {

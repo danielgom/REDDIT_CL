@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Context is a custom echo context.
+// Context is a custom with embedded echo context.
 type Context struct {
 	echo.Context
 }

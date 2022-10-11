@@ -27,6 +27,7 @@ func (h *UserHandler) Register(r *echo.Echo, handler func(fn func(context.Contex
 	authGroup.POST("/signup", handler(h.SignUp))
 	authGroup.GET("/accountVerification/:token", handler(h.VerifyAccount))
 	authGroup.POST("/login", handler(h.Login))
+	authGroup.POST("/refresh/token", handler(h.refreshToken))
 }
 
 // SignUp is used to create a new user.
@@ -70,6 +71,22 @@ func (h *UserHandler) Login(c context.Context) error {
 		res, logErr := h.UsrSvc.Login(c.Request().Context(), &req)
 		if logErr != nil {
 			return nil, logErr
+		}
+
+		return &context.GResponse{
+			Status:   http.StatusOK,
+			Response: res,
+		}, nil
+	})
+}
+
+func (h *UserHandler) refreshToken(c context.Context) error {
+	var req internal.RefreshTokenRequest
+
+	return c.BindAndValidateResp(&req, func() (*context.GResponse, errors.CommonError) {
+		res, refreshErr := h.UsrSvc.RefreshToken(c.Request().Context(), &req)
+		if refreshErr != nil {
+			return nil, refreshErr
 		}
 
 		return &context.GResponse{

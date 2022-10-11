@@ -27,6 +27,8 @@ func TestUserService(t *testing.T) {
 		"test login with username success": testLoginByUsername,
 		"test sign up db err fails":        testUserSignUpDBErr,
 		"test sign up tkn db err fails":    testUserServiceSignUpTknDBErr,
+		"test refresh token success":       testRefreshToken,
+		"test refresh token expired fails": testRefreshTokenExpired,
 	} {
 		fn := fn
 		t.Run(scenario, func(t *testing.T) {
@@ -191,4 +193,48 @@ func testLoginByUsername(t *testing.T, uR *mock_repositories.MockUserRepository,
 
 	require.Error(t, commonError)
 	require.Nil(t, loginResponse)
+}
+
+func testRefreshToken(t *testing.T, _ *mock_repositories.MockUserRepository,
+	_ *mock_repositories.MockTokenRepository, rtSvc *mock_services.MockRefreshTokenService, userSvc UserService) {
+	t.Helper()
+
+	refReq := &internal.RefreshTokenRequest{
+		RefreshToken: "asd12345",
+		Username:     "testuser",
+	}
+
+	want := "rt1234asd"
+
+	ctx := context.Background()
+
+	rtSvc.EXPECT().Validate(ctx, refReq.RefreshToken).Return(nil)
+	rtSvc.EXPECT().Create(ctx).Return(want, nil)
+
+	resp, err := userSvc.RefreshToken(ctx, refReq)
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	require.Equal(t, want, resp.RefreshToken)
+	require.Equal(t, refReq.Username, resp.Username)
+	require.Greater(t, resp.ExpiresAt.Unix(), time.Now().Unix())
+
+}
+
+func testRefreshTokenExpired(t *testing.T, _ *mock_repositories.MockUserRepository,
+	_ *mock_repositories.MockTokenRepository, rtSvc *mock_services.MockRefreshTokenService, userSvc UserService) {
+	t.Helper()
+
+	refReq := &internal.RefreshTokenRequest{
+		RefreshToken: "asd12345",
+		Username:     "testuser",
+	}
+
+	ctx := context.Background()
+
+	rtSvc.EXPECT().Validate(ctx, refReq.RefreshToken).Return(errors.NewUnauthorisedError("refresh token expired"))
+
+	resp, err := userSvc.RefreshToken(ctx, refReq)
+	require.Nil(t, resp)
+	require.NotNil(t, err)
+	require.Equal(t, err.Message(), "refresh token expired")
 }
