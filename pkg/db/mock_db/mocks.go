@@ -56,6 +56,26 @@ func (mr *MockDBConnMockRecorder) Exec(ctx, sql interface{}, arguments ...interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDBConn)(nil).Exec), varargs...)
 }
 
+// Query mocks base method.
+func (m *MockDBConn) Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, sql}
+	for _, a := range args {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Query", varargs...)
+	ret0, _ := ret[0].(pgx.Rows)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Query indicates an expected call of Query.
+func (mr *MockDBConnMockRecorder) Query(ctx, sql interface{}, args ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, sql}, args...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDBConn)(nil).Query), varargs...)
+}
+
 // QueryRow mocks base method.
 func (m *MockDBConn) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
 	m.ctrl.T.Helper()

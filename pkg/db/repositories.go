@@ -28,3 +28,10 @@ type RefreshTokenRepository interface {
 	Save(context.Context, *model.RefreshToken) errors.CommonError
 	FindByToken(context.Context, string) (*model.RefreshToken, errors.CommonError)
 }
+
+// SubredditRepository serves as a middleware to call our subreddit table.
+type SubredditRepository interface {
+	Save(context.Context, *model.Subreddit) errors.CommonError
+	FindByID(context.Context, int) (*model.Subreddit, errors.CommonError)
+	FindAll(ctx context.Context) ([]*model.Subreddit, errors.CommonError)
+}

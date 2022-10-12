@@ -28,3 +28,24 @@ type RefreshToken struct {
 	Token     string
 	ExpiresAt time.Time
 }
+
+// Subreddit represents a subreddit.
+type Subreddit struct {
+	ID          int
+	Name        string
+	Description string
+	CreatedAt   time.Time
+	UserID      int
+}
+
+// Post represents a post linked to a subreddit.
+type Post struct {
+	ID          int
+	Name        string
+	URL         string
+	Description string
+	VoteCount   int
+	UserID      int
+	SubredditID int
+	CreatedAt   time.Time
+}

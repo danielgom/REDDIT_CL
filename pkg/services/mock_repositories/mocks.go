@@ -198,3 +198,70 @@ func (mr *MockRefreshTokenRepositoryMockRecorder) Save(arg0, arg1 interface{}) *
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockRefreshTokenRepository)(nil).Save), arg0, arg1)
 }
+
+// MockSubredditRepository is a mock of SubredditRepository interface.
+type MockSubredditRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockSubredditRepositoryMockRecorder
+}
+
+// MockSubredditRepositoryMockRecorder is the mock recorder for MockSubredditRepository.
+type MockSubredditRepositoryMockRecorder struct {
+	mock *MockSubredditRepository
+}
+
+// NewMockSubredditRepository creates a new mock instance.
+func NewMockSubredditRepository(ctrl *gomock.Controller) *MockSubredditRepository {
+	mock := &MockSubredditRepository{ctrl: ctrl}
+	mock.recorder = &MockSubredditRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSubredditRepository) EXPECT() *MockSubredditRepositoryMockRecorder {
+	return m.recorder
+}
+
+// FindAll mocks base method.
+func (m *MockSubredditRepository) FindAll(ctx context.Context) ([]*model.Subreddit, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll", ctx)
+	ret0, _ := ret[0].([]*model.Subreddit)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockSubredditRepositoryMockRecorder) FindAll(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockSubredditRepository)(nil).FindAll), ctx)
+}
+
+// FindByID mocks base method.
+func (m *MockSubredditRepository) FindByID(arg0 context.Context, arg1 int) (*model.Subreddit, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", arg0, arg1)
+	ret0, _ := ret[0].(*model.Subreddit)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockSubredditRepositoryMockRecorder) FindByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockSubredditRepository)(nil).FindByID), arg0, arg1)
+}
+
+// Save mocks base method.
+func (m *MockSubredditRepository) Save(arg0 context.Context, arg1 *model.Subreddit) errors.CommonError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0, arg1)
+	ret0, _ := ret[0].(errors.CommonError)
+	return ret0
+}
+
+// Save indicates an expected call of Save.
+func (mr *MockSubredditRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockSubredditRepository)(nil).Save), arg0, arg1)
+}
