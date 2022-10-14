@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"sync"
 
 	"github.com/spf13/viper"
 )
@@ -40,27 +41,31 @@ type jwt struct {
 
 // LoadConfig gets the configuration in from .env files and stores the in Config struct.
 func LoadConfig() *Config {
-	cPath := os.Getenv(configPath)
-	if cPath == "" {
-		log.Fatalln("CONFIG_PATH is not set")
-	}
-
-	viper.AddConfigPath(cPath + "/pkg/config/envs")
-	viper.SetConfigName("dev")
-	viper.SetConfigType("env")
-
-	viper.AutomaticEnv()
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalln("Could not read configuration:", err.Error())
-	}
-
 	var c Config
-	err = viper.Unmarshal(&c)
-	if err != nil {
-		log.Fatalln("Could not unmarshal to Config struct:", err.Error())
-	}
+	var once sync.Once
+
+	once.Do(func() {
+		cPath := os.Getenv(configPath)
+		if cPath == "" {
+			log.Fatalln("CONFIG_PATH is not set")
+		}
+
+		viper.AddConfigPath(cPath + "/pkg/config/envs")
+		viper.SetConfigName("dev")
+		viper.SetConfigType("env")
+
+		viper.AutomaticEnv()
+
+		err := viper.ReadInConfig()
+		if err != nil {
+			log.Fatalln("Could not read configuration:", err.Error())
+		}
+
+		err = viper.Unmarshal(&c)
+		if err != nil {
+			log.Fatalln("Could not unmarshal to Config struct:", err.Error())
+		}
+	})
 
 	return &c
 }

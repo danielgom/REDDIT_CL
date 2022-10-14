@@ -22,7 +22,7 @@ func GenerateTokenWithExp(username string) (string, time.Time, error) {
 		Subject:   username,
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	signedToken, err := token.SignedString([]byte(jwtConfig.Key))
 
 	if err != nil {
