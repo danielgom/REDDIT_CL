@@ -136,12 +136,16 @@ func initialiseAPI() *echo.Echo {
 	userRepository := db.NewUserRepository(DBc)
 	tokenRepository := db.NewTokenRepository(DBc)
 	refreshTokenRepository := db.NewRTRepository(DBc)
+	subredditRepository := db.NewSubredditRepository(DBc)
 
 	refreshTokenService := services.NewRefreshTokenService(refreshTokenRepository)
 	userService := services.NewUserService(userRepository, tokenRepository, refreshTokenService)
+	subRedditService := services.NewSubredditSvc(subredditRepository, userService)
 
 	userHandler := routes.NewUserHandler(userService)
+	subRedditHandler := routes.NewSubRedditHandler(subRedditService)
 	userHandler.Register(router, context.Handler)
+	subRedditHandler.Register(router, context.Handler)
 
 	return router
 }

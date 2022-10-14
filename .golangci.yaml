@@ -164,6 +164,9 @@ issues:
     - path: "pkg/config/validator.go"
       linters:
         - wrapcheck
+    - path: "pkg/routes/subreddit.go"
+      linters:
+        - wrapcheck
   exclude:
     - declaration of "err" shadows declaration at
 

@@ -63,6 +63,22 @@ func (u *userSvc) SignUp(ctx context.Context, req *internal.RegisterRequest) (*i
 	return internal.BuildRegisterResponse(user), nil
 }
 
+func (u *userSvc) Get(ctx context.Context, username string) (*internal.UserResponse, errors.CommonError) {
+	user, commonError := u.userDB.FindByUsername(ctx, username)
+	if commonError != nil {
+		return nil, commonError
+	}
+
+	return &internal.UserResponse{
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Enabled:   user.Enabled,
+	}, nil
+}
+
 // VerifyAccount verifies the account.
 func (u *userSvc) VerifyAccount(ctx context.Context, tStr string) errors.CommonError {
 	token, verErr := u.tokenDB.FindByToken(ctx, tStr)

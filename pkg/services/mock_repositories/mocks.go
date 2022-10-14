@@ -253,11 +253,12 @@ func (mr *MockSubredditRepositoryMockRecorder) FindByID(arg0, arg1 interface{}) 
 }
 
 // Save mocks base method.
-func (m *MockSubredditRepository) Save(arg0 context.Context, arg1 *model.Subreddit) errors.CommonError {
+func (m *MockSubredditRepository) Save(arg0 context.Context, arg1 *model.Subreddit) (*model.Subreddit, errors.CommonError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
-	ret0, _ := ret[0].(errors.CommonError)
-	return ret0
+	ret0, _ := ret[0].(*model.Subreddit)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
 }
 
 // Save indicates an expected call of Save.

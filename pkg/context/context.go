@@ -19,6 +19,19 @@ type GResponse struct {
 	Response any
 }
 
+// User gets the username from the context.
+func (c *Context) User() string {
+	get := c.Get("user")
+	if get != nil {
+		user, ok := get.(string)
+		if !ok {
+			return ""
+		}
+		return user
+	}
+	return ""
+}
+
 // BindAndValidateResp binds and validates structs if required.
 func (c *Context) BindAndValidateResp(req any, fn func() (*GResponse, errors.CommonError)) error {
 	if err := c.Bind(req); err != nil {

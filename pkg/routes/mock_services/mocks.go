@@ -36,6 +36,21 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
+// Get mocks base method.
+func (m *MockUserService) Get(arg0 context.Context, arg1 string) (*internal.UserResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret0, _ := ret[0].(*internal.UserResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockUserServiceMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserService)(nil).Get), arg0, arg1)
+}
+
 // Login mocks base method.
 func (m *MockUserService) Login(arg0 context.Context, arg1 *internal.LoginRequest) (*internal.LoginResponse, errors.CommonError) {
 	m.ctrl.T.Helper()
@@ -145,4 +160,72 @@ func (m *MockRefreshTokenService) Validate(arg0 context.Context, arg1 string) er
 func (mr *MockRefreshTokenServiceMockRecorder) Validate(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Validate", reflect.TypeOf((*MockRefreshTokenService)(nil).Validate), arg0, arg1)
+}
+
+// MockSubredditService is a mock of SubredditService interface.
+type MockSubredditService struct {
+	ctrl     *gomock.Controller
+	recorder *MockSubredditServiceMockRecorder
+}
+
+// MockSubredditServiceMockRecorder is the mock recorder for MockSubredditService.
+type MockSubredditServiceMockRecorder struct {
+	mock *MockSubredditService
+}
+
+// NewMockSubredditService creates a new mock instance.
+func NewMockSubredditService(ctrl *gomock.Controller) *MockSubredditService {
+	mock := &MockSubredditService{ctrl: ctrl}
+	mock.recorder = &MockSubredditServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSubredditService) EXPECT() *MockSubredditServiceMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockSubredditService) Create(arg0 context.Context, arg1 *internal.NewSubreddit, arg2 string) (*internal.SubredditResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*internal.SubredditResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockSubredditServiceMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSubredditService)(nil).Create), arg0, arg1, arg2)
+}
+
+// Get mocks base method.
+func (m *MockSubredditService) Get(arg0 context.Context, arg1 int) (*internal.SubredditResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret0, _ := ret[0].(*internal.SubredditResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockSubredditServiceMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSubredditService)(nil).Get), arg0, arg1)
+}
+
+// GetAll mocks base method.
+func (m *MockSubredditService) GetAll(arg0 context.Context) ([]*internal.SubredditResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll", arg0)
+	ret0, _ := ret[0].([]*internal.SubredditResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockSubredditServiceMockRecorder) GetAll(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockSubredditService)(nil).GetAll), arg0)
 }
