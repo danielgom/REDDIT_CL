@@ -8,7 +8,7 @@ import (
 	"RD-Clone-API/pkg/internal"
 	"RD-Clone-API/pkg/model"
 	"RD-Clone-API/pkg/util/errors"
-	"github.com/samber/lo"
+	"golang.org/x/sync/errgroup"
 )
 
 type subredditSvc struct {
@@ -43,7 +43,7 @@ func (s *subredditSvc) Create(ctx context.Context, subreddit *internal.NewSubred
 		return nil, saveErr
 	}
 
-	return internal.BuildSubredditResponse(savedSubR), nil
+	return internal.BuildSubredditResponse(savedSubR, 0), nil
 }
 
 // Get gets the subreddit.
@@ -53,7 +53,12 @@ func (s *subredditSvc) Get(ctx context.Context, subRedditID int) (*internal.Subr
 		return nil, commonError
 	}
 
-	return internal.BuildSubredditResponse(subRedditResponse), nil
+	count, countErr := s.subRDB.GetSubredditPostCount(ctx, subRedditResponse.ID)
+	if countErr != nil {
+		return nil, countErr
+	}
+
+	return internal.BuildSubredditResponse(subRedditResponse, count), nil
 }
 
 // GetAll returns a list of all subreddits.
@@ -63,7 +68,28 @@ func (s *subredditSvc) GetAll(ctx context.Context) ([]*internal.SubredditRespons
 		return nil, commonError
 	}
 
-	return lo.Map(subRList, func(subRR *model.Subreddit, _ int) *internal.SubredditResponse {
-		return internal.BuildSubredditResponse(subRR)
-	}), nil
+	g, gCtx := errgroup.WithContext(ctx)
+
+	resList := make([]*internal.SubredditResponse, 0, len(subRList))
+
+	// Probably needs channels in order to work properly (append to slice is not really concurrent safe)
+	for _, subreddit := range subRList {
+		func(ctx context.Context, sr *model.Subreddit) {
+			g.Go(func() error {
+				count, e := s.subRDB.GetSubredditPostCount(ctx, sr.ID)
+				if e != nil {
+					return e
+				}
+				resList = append(resList, internal.BuildSubredditResponse(sr, count))
+				return nil
+			})
+		}(gCtx, subreddit)
+	}
+
+	err := g.Wait()
+	if err != nil {
+		return nil, errors.NewInternalServerError("could not retrieve subreddits", err)
+	}
+
+	return resList, nil
 }

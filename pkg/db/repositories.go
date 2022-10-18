@@ -34,4 +34,5 @@ type SubredditRepository interface {
 	Save(context.Context, *model.Subreddit) (*model.Subreddit, errors.CommonError)
 	FindByID(context.Context, int) (*model.Subreddit, errors.CommonError)
 	FindAll(ctx context.Context) ([]*model.Subreddit, errors.CommonError)
+	GetSubredditPostCount(context.Context, int) (int, errors.CommonError)
 }

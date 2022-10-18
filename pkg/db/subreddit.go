@@ -67,3 +67,17 @@ func (s *subredditRepo) FindAll(ctx context.Context) ([]*model.Subreddit, errors
 
 	return subreddits, nil
 }
+
+func (s *subredditRepo) GetSubredditPostCount(ctx context.Context, subID int) (int, errors.CommonError) {
+	var count int
+
+	err := s.DB.QueryRow(ctx, `SELECT count(*) FROM subreddit AS subr 
+    JOIN post p on subr.id = p.subreddit_id WHERE subr.id = $1;`,
+		subID).Scan(&count)
+
+	if err != nil {
+		return 0, errors.NewInternalServerError("Database error", err)
+	}
+
+	return count, nil
+}

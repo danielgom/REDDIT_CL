@@ -10,7 +10,6 @@ import (
 type NewSubreddit struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	UserID      int    `json:"user_id"`
 }
 
 // SubredditResponse is the response to a created subreddit or getting a subreddit information.
@@ -24,13 +23,13 @@ type SubredditResponse struct {
 }
 
 // BuildSubredditResponse constructs a SubredditResponse.
-func BuildSubredditResponse(subR *model.Subreddit) *SubredditResponse {
+func BuildSubredditResponse(subR *model.Subreddit, postNum int) *SubredditResponse {
 	return &SubredditResponse{
 		ID:            subR.ID,
 		Name:          subR.Name,
 		Description:   subR.Description,
 		CreatedAt:     subR.CreatedAt,
 		UserID:        subR.UserID,
-		NumberOfPosts: 0,
+		NumberOfPosts: postNum,
 	}
 }

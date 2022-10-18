@@ -252,6 +252,21 @@ func (mr *MockSubredditRepositoryMockRecorder) FindByID(arg0, arg1 interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockSubredditRepository)(nil).FindByID), arg0, arg1)
 }
 
+// GetSubredditPostCount mocks base method.
+func (m *MockSubredditRepository) GetSubredditPostCount(arg0 context.Context, arg1 int) (int, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSubredditPostCount", arg0, arg1)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// GetSubredditPostCount indicates an expected call of GetSubredditPostCount.
+func (mr *MockSubredditRepositoryMockRecorder) GetSubredditPostCount(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubredditPostCount", reflect.TypeOf((*MockSubredditRepository)(nil).GetSubredditPostCount), arg0, arg1)
+}
+
 // Save mocks base method.
 func (m *MockSubredditRepository) Save(arg0 context.Context, arg1 *model.Subreddit) (*model.Subreddit, errors.CommonError) {
 	m.ctrl.T.Helper()
