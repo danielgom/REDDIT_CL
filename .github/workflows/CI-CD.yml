@@ -30,12 +30,6 @@ jobs:
           CONFIG_PATH: ${{ github.workspace }}
         run: |
           make testCI
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
       - name: Build Docker image
         run: |
           make image
