@@ -1,4 +1,4 @@
-name: Lint and Test
+name: Lint, Test, Build and Deploy
 
 on:
   push:
@@ -21,8 +21,21 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v2.0.0
+        with:
+          dockerfile: Dockerfile
       - name: Test
         env:
           CONFIG_PATH: ${{ github.workspace }}
         run: |
           make testCI
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Build Docker image
+        run: |
+          make image

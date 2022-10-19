@@ -1,4 +1,4 @@
-.PHONY: genM test lint
+.PHONY: genM test lint image
 
 # Generates mocks Repositories and Services mocks for testing
 genM:
@@ -18,6 +18,12 @@ testCI:
 # Checks code with golangci-lint linters
 lint:
 	@golangci-lint run
+	@hadolint Dockerfile
 
+# Run the api
 run:
 	@go run ./cmd/api
+
+# Create Docker image
+image:
+	@docker build -t reddit-clone .
