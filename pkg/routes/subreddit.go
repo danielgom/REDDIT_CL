@@ -24,6 +24,8 @@ func NewSubRedditHandler(svc services.SubredditService) *SubRedditHandler {
 func (h *SubRedditHandler) Register(r *echo.Echo, handler func(fn func(context.Context) error) echo.HandlerFunc) {
 	authGroup := r.Group("/api/subreddit")
 	authGroup.POST("", handler(h.Create))
+	authGroup.GET("", handler(h.GetAll))
+	authGroup.GET("/:id", handler(h.Get))
 }
 
 // Create creates a new subreddit and binds it to a user.
@@ -38,6 +40,38 @@ func (h *SubRedditHandler) Create(c context.Context) error {
 
 		return &context.GResponse{
 			Status:   http.StatusCreated,
+			Response: res,
+		}, nil
+	})
+}
+
+// Get returns a single subreddit by ID.
+func (h *SubRedditHandler) Get(c context.Context) error {
+	var sRedditID int
+
+	return c.NoBindResp(func() (*context.GResponse, errors.CommonError) {
+		res, getErr := h.redditSVC.Get(c.Request().Context(), sRedditID)
+		if getErr != nil {
+			return nil, getErr
+		}
+
+		return &context.GResponse{
+			Status:   http.StatusOK,
+			Response: res,
+		}, nil
+	})
+}
+
+// GetAll returns all subreddits.
+func (h *SubRedditHandler) GetAll(c context.Context) error {
+	return c.NoBindResp(func() (*context.GResponse, errors.CommonError) {
+		res, getAllErr := h.redditSVC.GetAll(c.Request().Context())
+		if getAllErr != nil {
+			return nil, getAllErr
+		}
+
+		return &context.GResponse{
+			Status:   http.StatusOK,
 			Response: res,
 		}, nil
 	})

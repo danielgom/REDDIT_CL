@@ -86,18 +86,21 @@ func testCreateUser(t *testing.T, h *UserHandler, e *echo.Echo, svc *mock_servic
 		Enabled:  false,
 	}
 
-	svc.EXPECT().SignUp(gomock.Any(), gomock.Any()).Return(want, nil)
+	svc.EXPECT().SignUp(c.Request().Context(), &rr).Return(want, nil)
 
 	err = h.SignUp(c)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusCreated, rec.Code)
 	require.NoError(t, err)
 
-	responseString := rec.Body.String()
+	var got internal.RegisterResponse
 
-	require.Contains(t, responseString, want.Email)
-	require.Contains(t, responseString, want.Username)
-	require.Contains(t, responseString, fmt.Sprintf("%v", want.Enabled)) // There should be a better way to test this
+	err = json.NewDecoder(rec.Body).Decode(&got)
+	require.NoError(t, err)
+
+	require.Equal(t, want.Email, got.Email)
+	require.Equal(t, want.Username, got.Username)
+	require.Equal(t, want.Enabled, got.Enabled)
 }
 
 func testCreateUserBadJSON(t *testing.T, h *UserHandler, e *echo.Echo, _ *mock_services.MockUserService) {
@@ -217,12 +220,14 @@ func testLogin(t *testing.T, h *UserHandler, e *echo.Echo, svc *mock_services.Mo
 	require.Equal(t, http.StatusOK, rec.Code)
 	require.NoError(t, err)
 
-	responseString := rec.Body.String()
+	var got internal.LoginResponse
+	err = json.NewDecoder(rec.Body).Decode(&got)
+	require.NoError(t, err)
 
-	require.Contains(t, responseString, want.Email)
-	require.Contains(t, responseString, want.Username)
-	require.Contains(t, responseString, want.Token)
-	require.Contains(t, responseString, want.RefreshToken)
+	require.Contains(t, want.Email, got.Email)
+	require.Contains(t, want.Username, got.Username)
+	require.Contains(t, want.Token, got.Token)
+	require.Contains(t, want.RefreshToken, got.RefreshToken)
 }
 
 func testLoginSvcErr(t *testing.T, h *UserHandler, e *echo.Echo, svc *mock_services.MockUserService) {
