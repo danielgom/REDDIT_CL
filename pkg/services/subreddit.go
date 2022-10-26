@@ -8,6 +8,7 @@ import (
 	"RD-Clone-API/pkg/internal"
 	"RD-Clone-API/pkg/model"
 	"RD-Clone-API/pkg/util/errors"
+	"github.com/samber/lo"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -70,7 +71,7 @@ func (s *subredditSvc) GetAll(ctx context.Context) ([]*internal.SubredditRespons
 
 	g, gCtx := errgroup.WithContext(ctx)
 
-	resList := make([]*internal.SubredditResponse, 0, len(subRList))
+	resChan := make(chan *internal.SubredditResponse, len(subRList))
 
 	// Probably needs channels in order to work properly (append to slice is not really concurrent safe)
 	for _, subreddit := range subRList {
@@ -80,7 +81,7 @@ func (s *subredditSvc) GetAll(ctx context.Context) ([]*internal.SubredditRespons
 				if e != nil {
 					return e
 				}
-				resList = append(resList, internal.BuildSubredditResponse(sr, count))
+				resChan <- internal.BuildSubredditResponse(sr, count)
 				return nil
 			})
 		}(gCtx, subreddit)
@@ -91,5 +92,7 @@ func (s *subredditSvc) GetAll(ctx context.Context) ([]*internal.SubredditRespons
 		return nil, errors.NewInternalServerError("could not retrieve subreddits", err)
 	}
 
-	return resList, nil
+	close(resChan)
+
+	return lo.ChannelToSlice(resChan), nil
 }

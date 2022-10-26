@@ -132,7 +132,7 @@ func testCreateSubredditSvcErr(t *testing.T, h *SubRedditHandler, e *echo.Echo, 
 func testGetSubreddit(t *testing.T, h *SubRedditHandler, e *echo.Echo, svc *mock_services.MockSubredditService) {
 	t.Helper()
 
-	req := httptest.NewRequest(http.MethodGet, "/api/subreddit/10", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/subreddit", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := context.Context{Context: e.NewContext(req, rec)}

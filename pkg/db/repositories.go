@@ -33,6 +33,14 @@ type RefreshTokenRepository interface {
 type SubredditRepository interface {
 	Save(context.Context, *model.Subreddit) (*model.Subreddit, errors.CommonError)
 	FindByID(context.Context, int) (*model.Subreddit, errors.CommonError)
-	FindAll(ctx context.Context) ([]*model.Subreddit, errors.CommonError)
+	FindAll(context.Context) ([]*model.Subreddit, errors.CommonError)
 	GetSubredditPostCount(context.Context, int) (int, errors.CommonError)
+}
+
+// PostRepository serves as a middleware to call our post table.
+type PostRepository interface {
+	Save(context.Context, *model.Post) (*model.Post, errors.CommonError)
+	FindByID(context.Context, int) (*model.Post, errors.CommonError)
+	FindAllByUser(context.Context, int) ([]*model.Post, errors.CommonError)
+	FindAllBySubreddit(context.Context, int) ([]*model.Post, errors.CommonError)
 }

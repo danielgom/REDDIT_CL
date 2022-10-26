@@ -229,3 +229,86 @@ func (mr *MockSubredditServiceMockRecorder) GetAll(arg0 interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockSubredditService)(nil).GetAll), arg0)
 }
+
+// MockPostService is a mock of PostService interface.
+type MockPostService struct {
+	ctrl     *gomock.Controller
+	recorder *MockPostServiceMockRecorder
+}
+
+// MockPostServiceMockRecorder is the mock recorder for MockPostService.
+type MockPostServiceMockRecorder struct {
+	mock *MockPostService
+}
+
+// NewMockPostService creates a new mock instance.
+func NewMockPostService(ctrl *gomock.Controller) *MockPostService {
+	mock := &MockPostService{ctrl: ctrl}
+	mock.recorder = &MockPostServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPostService) EXPECT() *MockPostServiceMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockPostService) Create(arg0 context.Context, arg1 *internal.NewPost, arg2 string) (*internal.PostResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*internal.PostResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockPostServiceMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPostService)(nil).Create), arg0, arg1, arg2)
+}
+
+// Get mocks base method.
+func (m *MockPostService) Get(arg0 context.Context, arg1 int) (*internal.PostResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret0, _ := ret[0].(*internal.PostResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockPostServiceMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPostService)(nil).Get), arg0, arg1)
+}
+
+// GetAllBySubreddit mocks base method.
+func (m *MockPostService) GetAllBySubreddit(arg0 context.Context, arg1 int) ([]*internal.PostResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllBySubreddit", arg0, arg1)
+	ret0, _ := ret[0].([]*internal.PostResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// GetAllBySubreddit indicates an expected call of GetAllBySubreddit.
+func (mr *MockPostServiceMockRecorder) GetAllBySubreddit(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllBySubreddit", reflect.TypeOf((*MockPostService)(nil).GetAllBySubreddit), arg0, arg1)
+}
+
+// GetAllByUser mocks base method.
+func (m *MockPostService) GetAllByUser(arg0 context.Context, arg1 string) ([]*internal.PostResponse, errors.CommonError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllByUser", arg0, arg1)
+	ret0, _ := ret[0].([]*internal.PostResponse)
+	ret1, _ := ret[1].(errors.CommonError)
+	return ret0, ret1
+}
+
+// GetAllByUser indicates an expected call of GetAllByUser.
+func (mr *MockPostServiceMockRecorder) GetAllByUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllByUser", reflect.TypeOf((*MockPostService)(nil).GetAllByUser), arg0, arg1)
+}

@@ -28,3 +28,11 @@ type SubredditService interface {
 	Get(context.Context, int) (*internal.SubredditResponse, errors.CommonError)
 	GetAll(context.Context) ([]*internal.SubredditResponse, errors.CommonError)
 }
+
+// PostService contains all business logic for the Post service.
+type PostService interface {
+	Create(context.Context, *internal.NewPost, string) (*internal.PostResponse, errors.CommonError)
+	Get(context.Context, int) (*internal.PostResponse, errors.CommonError)
+	GetAllByUser(context.Context, string) ([]*internal.PostResponse, errors.CommonError)
+	GetAllBySubreddit(context.Context, int) ([]*internal.PostResponse, errors.CommonError)
+}

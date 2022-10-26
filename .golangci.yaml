@@ -167,11 +167,20 @@ issues:
     - path: "pkg/routes/subreddit.go"
       linters:
         - wrapcheck
+        - dupl
     - path: "pkg/routes/subreddit_test.go"
       linters:
         - dupl
     - path: "pkg/routes/user_test.go"
       linters:
+        - dupl
+    - path: "pkg/routes/post.go"
+      linters:
+        - wrapcheck
+        - dupl
+    - path: "pkg/services/post.go"
+      linters:
+        - wrapcheck
         - dupl
   exclude:
     - declaration of "err" shadows declaration at
